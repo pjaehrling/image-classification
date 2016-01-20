@@ -4,6 +4,7 @@
  */
 package de.htw.cv.mj.controller;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 
 public class ImageClassificationUIController {
@@ -11,6 +12,11 @@ public class ImageClassificationUIController {
 	@FXML
 	public void initialize() {
 		System.out.println("Init!");
+	}
+	
+	@FXML
+	public void runMethod(ActionEvent event) {
+		System.out.println("Run!");
 	}
 	    
 }
