@@ -1,11 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.htw.cv.mj.controller.ImageClassificationUIController">
-   <children>
-   </children>
-</AnchorPane>
+<BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.htw.cv.mj.controller.ImageClassificationUIController">
+   <top>
+      
+      <GridPane hgap="20.0" vgap="10.0" BorderPane.alignment="CENTER">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" />
+          <ColumnConstraints hgrow="SOMETIMES" />
+          <ColumnConstraints hgrow="SOMETIMES" />
+          <ColumnConstraints hgrow="SOMETIMES" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints vgrow="SOMETIMES" />
+          <RowConstraints vgrow="SOMETIMES" />
+        </rowConstraints>
+        <children>
+        
+          <Label text="1. Input Image Set:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+          <ChoiceBox fx:id="imageSetChoiceBox" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+          
+          <Label text="2. Feature Type:" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+          <ChoiceBox fx:id="featureTypeChoiceBox" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+          
+        </children>
+        <padding>
+          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+        </padding>
+      </GridPane>
+      
+   </top>
+</BorderPane>

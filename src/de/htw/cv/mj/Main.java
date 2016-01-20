@@ -8,6 +8,9 @@ import javafx.stage.Stage;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 
+/**
+ * @author Marie Manderla, Philipp Jährling
+ */
 public class Main extends Application {
 	
 	@Override
