@@ -3,16 +3,16 @@ package de.htw.cv.featureextraction;
 public class MeanColor implements FeatureExtractor {
 
 	@Override
-	public double[] extract(int[] pixels, int width, int height) {
+	public double[] extract(int[] pixels, int x, int y, int width, int height, int image_width) {
 		
 		int r_sum = 0;
 		int g_sum = 0;
 		int b_sum = 0;
 		int sum = 0;
 		
-		for (int i = 0; i < width; i++) {
-			for (int j = 0; i < height; j++) {
-				int c = pixels[j * width + i];
+		for (int i = x; i < width; i++) {
+			for (int j = y; i < height; j++) {
+				int c = pixels[j * image_width + i];
 				r_sum += (c>>16)&0xFF;
 				g_sum += (c>> 8)&0xFF;
 				b_sum += (c    )&0xFF;
