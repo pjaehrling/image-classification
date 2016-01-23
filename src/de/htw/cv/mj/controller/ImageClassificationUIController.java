@@ -17,6 +17,9 @@ public class ImageClassificationUIController {
 	private String[] imageSetPathes	 = new String[]{"images/easy", "images/hard"};
 	private String[] featureTypeChoices = new String[]{"Mean Color"};
 	
+	private enum FeatureExtraction { MeanColor };
+	private enum ClassMeasure { EucledianDistance };
+	
 	private ImageManager imageManager;
 	
 	@FXML

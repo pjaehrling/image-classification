@@ -117,6 +117,12 @@ public class ImageManager {
 		return new Pic(filename, category, image);
 	}
 	
+	/**
+	 * Gets the category name from a file
+	 * 
+	 * @param imageFile
+	 * @return
+	 */
 	private String getCategory(File imageFile) {
 		String filename = imageFile.getName().toLowerCase();
 		return filename.substring(0, filename.indexOf("_"));
