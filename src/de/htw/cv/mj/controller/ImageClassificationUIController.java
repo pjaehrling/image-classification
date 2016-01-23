@@ -16,9 +16,7 @@ public class ImageClassificationUIController {
 	private String[] imageSetChoices = new String[]{"Easy (250 Images)", "Hard (720 Images)"};
 	private String[] imageSetPathes	 = new String[]{"images/easy", "images/hard"};
 	private String[] featureTypeChoices = new String[]{"Mean Color"};
-	
-	private enum FeatureExtraction { MeanColor };
-	private enum ClassMeasure { EucledianDistance };
+	private String[] classMeasureChoices = new String[]{"Eucledian Distance"};
 	
 	private ImageManager imageManager;
 	
@@ -26,6 +24,8 @@ public class ImageClassificationUIController {
 	ChoiceBox<String> imageSetChoiceBox;
 	@FXML
 	ChoiceBox<String> featureTypeChoiceBox;
+	@FXML
+	ChoiceBox<String> classMeasureChoiceBox;
 	
 	@FXML
 	public void initialize() {
@@ -33,6 +33,7 @@ public class ImageClassificationUIController {
 		
 		initImageSetChoiceBox();
 		initFeatureTypeChoiceBox();
+		initClassMeasureChoiceBox();
         
 		System.out.println("Initialized!");
 	}
@@ -70,6 +71,19 @@ public class ImageClassificationUIController {
         
         // Select first item by default
 		featureTypeChoiceBox.getSelectionModel().selectFirst();
+	}
+	
+	private void initClassMeasureChoiceBox() {
+		ObservableList<String> featureTypeChoiceList = FXCollections.observableArrayList(classMeasureChoices);
+		classMeasureChoiceBox.setItems(featureTypeChoiceList);
+        
+        // Add event listener
+		classMeasureChoiceBox.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
+        	// TODO
+        });
+        
+        // Select first item by default
+		classMeasureChoiceBox.getSelectionModel().selectFirst();
 	}
 	    
 }
