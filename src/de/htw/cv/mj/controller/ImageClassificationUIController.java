@@ -1,12 +1,15 @@
 package de.htw.cv.mj.controller;
 
 import de.htw.cv.featureextraction.FeatureExtractor;
+import de.htw.cv.featureextraction.MeanColor;
 import de.htw.cv.mj.ImageManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Button;
 
 /**
  * @author Marie Manderla, Philipp Jährling
@@ -19,6 +22,7 @@ public class ImageClassificationUIController {
 	private String[] classMeasureChoices = new String[]{"Eucledian Distance"};
 	
 	private ImageManager imageManager;
+	private FeatureExtractor extractor;
 	
 	@FXML
 	ChoiceBox<String> imageSetChoiceBox;
@@ -26,6 +30,11 @@ public class ImageClassificationUIController {
 	ChoiceBox<String> featureTypeChoiceBox;
 	@FXML
 	ChoiceBox<String> classMeasureChoiceBox;
+	@FXML
+	Button trainButton;
+	@FXML
+	Button calculateButton;
+	
 	
 	@FXML
 	public void initialize() {
@@ -34,6 +43,8 @@ public class ImageClassificationUIController {
 		initImageSetChoiceBox();
 		initFeatureTypeChoiceBox();
 		initClassMeasureChoiceBox();
+		initTrainButton();
+		initCalculateButton();
         
 		System.out.println("Initialized!");
 	}
@@ -66,7 +77,11 @@ public class ImageClassificationUIController {
         
         // Add event listener
 		featureTypeChoiceBox.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
-        	// TODO
+        	switch ((int) newValue) {
+        		case 0:
+        			extractor = new MeanColor();
+        			break;
+        	}
         });
         
         // Select first item by default
@@ -86,4 +101,22 @@ public class ImageClassificationUIController {
 		classMeasureChoiceBox.getSelectionModel().selectFirst();
 	}
 	    
+	private void initTrainButton() {
+		trainButton.setOnAction(new EventHandler<ActionEvent>() {
+			
+		    @Override public void handle(ActionEvent e) {
+		    	int imageSet = imageSetChoiceBox.getSelectionModel().getSelectedIndex();
+		        imageManager.trainImages(imageSetPathes[imageSet], extractor);
+		    }
+		});
+	}
+	
+	private void initCalculateButton() {
+		calculateButton.setOnAction(new EventHandler<ActionEvent>() {
+			
+		    @Override public void handle(ActionEvent e) {
+		    	// TODO
+		    }
+		});
+	}
 }

@@ -11,7 +11,7 @@ public class MeanColor implements FeatureExtractor {
 		int sum = 0;
 		
 		for (int i = x; i < width; i++) {
-			for (int j = y; i < height; j++) {
+			for (int j = y; j < height; j++) {
 				int c = pixels[j * imageWidth + i];
 				r_sum += (c>>16)&0xFF;
 				g_sum += (c>> 8)&0xFF;

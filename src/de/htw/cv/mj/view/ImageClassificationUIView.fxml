@@ -31,6 +31,9 @@
           <Label text="3. Class Measure:" GridPane.columnIndex="2" GridPane.rowIndex="0" />
           <ChoiceBox fx:id="classMeasureChoiceBox" GridPane.columnIndex="2" GridPane.rowIndex="1" />
           
+          <Button fx:id="trainButton" text="Train" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+          <Button fx:id="calculateButton" text="Calculate" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+          
         </children>
         <padding>
           <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />

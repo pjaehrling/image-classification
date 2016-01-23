@@ -86,7 +86,7 @@ public class ImageManager {
 		for (File imageFile : imageFiles) {
 			imageList.add(loadImage(imageFile));
 		}
-		imageCache.put(imageDir.getPath().toLowerCase(), imageList);
+		imageCache.put(path, imageList);
 		
 
 		// create categories and add them to a category set that is stored for a path
@@ -94,7 +94,7 @@ public class ImageManager {
 		for (File imageFile : imageFiles) {
 			categorySet.add(loadCategory(imageFile));
 		}
-		categoryCache.put(imageDir.getPath().toLowerCase(), categorySet);
+		categoryCache.put(path, categorySet);
 	}
 	
 	private Category loadCategory(File imageFile) {
