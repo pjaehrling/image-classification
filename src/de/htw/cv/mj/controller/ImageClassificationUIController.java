@@ -1,5 +1,6 @@
 package de.htw.cv.mj.controller;
 
+import de.htw.cv.featureextraction.FeatureExtractor;
 import de.htw.cv.mj.ImageManager;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

@@ -3,7 +3,7 @@ package de.htw.cv.featureextraction;
 public class MeanColor implements FeatureExtractor {
 
 	@Override
-	public double[] extract(int[] pixels, int x, int y, int width, int height, int image_width) {
+	public double[] extract(int[] pixels, int x, int y, int width, int height, int imageWidth) {
 		
 		int r_sum = 0;
 		int g_sum = 0;
@@ -12,7 +12,7 @@ public class MeanColor implements FeatureExtractor {
 		
 		for (int i = x; i < width; i++) {
 			for (int j = y; i < height; j++) {
-				int c = pixels[j * image_width + i];
+				int c = pixels[j * imageWidth + i];
 				r_sum += (c>>16)&0xFF;
 				g_sum += (c>> 8)&0xFF;
 				b_sum += (c    )&0xFF;

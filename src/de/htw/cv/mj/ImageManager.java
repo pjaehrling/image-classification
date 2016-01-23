@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import javafx.scene.image.Image;
+import de.htw.cv.featureextraction.FeatureExtractor;
 import de.htw.cv.mj.model.Pic;
 
 /**
@@ -95,6 +96,21 @@ public class ImageManager {
 		String category = filename.substring(0, filename.indexOf("_"));
 
 		return new Pic(filename, category, image);
+	}
+	
+	/**
+	 * Set the image features.
+	 * 
+	 * @param imagePath
+	 * @param extractor
+	 */
+	public void trainImages(String imagePath, FeatureExtractor extractor) {
+		List<Pic> pics = imageCache.get(imagePath);
+		
+		for (Pic pic : pics) {
+			double [] features = extractor.extract(pic.getPixels(), 0, 0, pic.getWidth(), pic.getHeight(), pic.getWidth());
+			pic.setFeatures(features);
+		}
 	}
 	
 }
