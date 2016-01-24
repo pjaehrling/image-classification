@@ -42,6 +42,10 @@ public class EuclideanOneVsAll implements Classifier {
 		Map<String, EucledianOneVsAllResult> distances = new HashMap<String, EucledianOneVsAllResult>();
 		
 		for (Pic trainedImage : trainedImages) {
+			if (image.getName().equals(trainedImage.getName())) {
+				continue; // do not compare with itself
+			}
+				
 			double distance = calcEuclideanDistance(image.getFeatures(), trainedImage.getFeatures());
 			
 			String trainedCategory = trainedImage.getCategory();
