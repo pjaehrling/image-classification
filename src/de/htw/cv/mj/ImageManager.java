@@ -71,6 +71,10 @@ public class ImageManager {
 		return imageCache.get(currentPath);
 	}
 	
+	public Set<Category> getCategories() {
+		return categoryCache.get(currentPath);
+	}
+
 	/**
 	 * 
 	 * @return

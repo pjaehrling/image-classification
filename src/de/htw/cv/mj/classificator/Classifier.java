@@ -10,4 +10,6 @@ public interface Classifier {
 	// Dann sollten wir aber auch Pic als "category" wert keine String sondern ein Category-Object geben
 	public String classify(Pic image, ImageManager imageManager);
 	
+	public int classifyRank(Pic image, ImageManager imageManager);
+	
 }

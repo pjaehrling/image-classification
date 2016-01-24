@@ -52,6 +52,8 @@ public class ImageClassificationUIController {
 	@FXML
 	Button calculateButton;
 	@FXML
+	Button calculateAllButton;
+	@FXML
 	ImageView testImageView;
 	
 	@FXML
@@ -75,6 +77,7 @@ public class ImageClassificationUIController {
 		initClassMeasureChoiceBox();
 		initTrainButton();
 		initCalculateButton();
+		initCalculateAlButton();
 	}
 	
 	@FXML
@@ -206,6 +209,19 @@ public class ImageClassificationUIController {
 		    	String classifierLabel = classMeasureChoices[classMeasureChoiceBox.getSelectionModel().getSelectedIndex()];
 		    	categoryLabel.setText(categoryName);
 		    	statusLabel.setText("Calculated a category using " + classifierLabel);
+		    }
+		});
+	}
+	
+	/**
+	 * Calculate All Button
+	 */
+	private void initCalculateAlButton() {
+		calculateAllButton.setOnAction(new EventHandler<ActionEvent>() {
+			
+		    @Override public void handle(ActionEvent e) {
+		    	int rank = classifier.classifyRank(imageManager.getTestImage(), imageManager);		        
+		    	System.out.println(rank);
 		    }
 		});
 	}
