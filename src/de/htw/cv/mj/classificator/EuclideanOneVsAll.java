@@ -3,7 +3,6 @@ package de.htw.cv.mj.classificator;
 import java.util.List;
 
 import de.htw.cv.mj.ImageManager;
-import de.htw.cv.mj.model.Category;
 import de.htw.cv.mj.model.Pic;
 
 public class EuclideanOneVsAll implements Classifier {
@@ -17,12 +16,16 @@ public class EuclideanOneVsAll implements Classifier {
 		Pic bestFittingImage = null;
 		
 		for (Pic trainedImage : trainedImages) {
-			distance = calcEuclideanDistance(image.getFeatures(), trainedImage.getFeatures());
-			// System.out.println(trainedImage.getName() + " --> " + distance + " (min: " + minDistance + ")");
-			
-			if (distance < minDistance) {
-				minDistance = distance;
-				bestFittingImage = trainedImage;
+			if (image.getName().equals(trainedImage.getName())) {
+				continue; // do not compare with itself
+			} else {
+				distance = calcEuclideanDistance(image.getFeatures(), trainedImage.getFeatures());
+				// System.out.println(trainedImage.getName() + " --> " + distance + " (min: " + minDistance + ")");
+				
+				if (distance < minDistance) {
+					minDistance = distance;
+					bestFittingImage = trainedImage;
+				}
 			}
 		}
 		
