@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Set;
 
 import javafx.scene.image.Image;
-import de.htw.cv.featureextraction.FeatureExtractor;
+import de.htw.cv.mj.featureextractor.FeatureExtractor;
 import de.htw.cv.mj.model.Pic;
 import de.htw.cv.mj.model.Category;
 
@@ -21,59 +21,86 @@ public class ImageManager {
 	
 	private HashMap<String, List<Pic>> imageCache; // images (directory path is the key)
 	private HashMap<String, Set<Category>> categoryCache;
- 
+	private HashMap<String, Pic> testImages;
+	private String currentPath;
+	
 	/**
-	 * Default constructor
+	 * Constructor
 	 */
 	public ImageManager() {
 		imageCache = new HashMap<String, List<Pic>>();
 		categoryCache = new HashMap<String, Set<Category>>();
+		testImages = new HashMap<String, Pic>();
 	}
 	
-	/**
-	 * Load images from one path on object creation.
-	 * 
-	 * @param imageDirectory
-	 */
-	public ImageManager(String imagePath) {
-		imageCache = new HashMap<String, List<Pic>>();
-		this.loadImages(imagePath);
-	}
+	/* ***************************************************************************************************
+	 * Public Methods
+	 * ***************************************************************************************************/
 	
 	/**
-	 * Load images from multiple paths on object creation.
 	 * 
-	 * @param imageDirectories
+	 * @param imageName
+	 * @param imagePath
+	 * @return
 	 */
-	public ImageManager(String[] imagePaths) {
-		imageCache = new HashMap<String, List<Pic>>();
-		for (String path : imagePaths) {
-			this.loadImages(path);
+	public void removeImage(String imageName) {
+		List<Pic> pics = imageCache.get(currentPath);
+		
+		for (Pic pic : pics) {
+			if (pic.getName().equals(imageName)) {
+				pics.remove(pic);
+				return;
+			}  
 		}
 	}
 	
 	/**
 	 * 
-	 * @param path
+	 * @param imagePath
 	 * @return
 	 */
-	public List<Pic> getImageForPath(String path) {
-		return imageCache.get(path.toLowerCase());
+	public List<Pic> getImagesForPath(String imagePath) {
+		return imageCache.get(imagePath.toLowerCase());
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public List<Pic> getImages() {
+		return imageCache.get(currentPath);
+	}
+	
+	/**
+	 * 
+	 * @param imagePath
+	 * @return
+	 */
+	public Pic getImage(String imageName) {
+		List<Pic> pics = imageCache.get(currentPath);
+		
+		for (Pic pic : pics) {
+			if (pic.getName().equals(imageName)) { return pic; }  
+		}
+		return null;
 	}
 	
 	
 	/**
-	 * Load all images from a directory and put them into the image map
-	 * Adds categories for all images and puts them into the category map
+	 * Load images from a path and put them into the image map.
+	 * Adds categories for all images and puts them into the category map.
+	 * Sets the current image path, to the loaded one.
 	 * 
-	 * @param imageDir
+	 * @param imagePath
 	 */
-	public void loadImages(String path) {
+	public void loadImages(String imagePath) {
+		currentPath = imagePath.toLowerCase();
+		
 		// do not load images twice
-		if (imageCache.containsKey(path.toLowerCase())) return;
+		if (imageCache.containsKey(currentPath))  return;
 		
 		// get all images from the directory
-		File imageDir = new File(path);
+		File imageDir = new File(currentPath);
 		File[] imageFiles = imageDir.listFiles((File dir, String name) -> {
 			for (String ext : EXTENSIONS) {
                 if (name.toLowerCase().endsWith("." + ext)) { return true; }
@@ -86,7 +113,7 @@ public class ImageManager {
 		for (File imageFile : imageFiles) {
 			imageList.add(loadImage(imageFile));
 		}
-		imageCache.put(path, imageList);
+		imageCache.put(currentPath, imageList);
 		
 
 		// create categories and add them to a category set that is stored for a path
@@ -94,8 +121,45 @@ public class ImageManager {
 		for (File imageFile : imageFiles) {
 			categorySet.add(loadCategory(imageFile));
 		}
-		categoryCache.put(path, categorySet);
+		categoryCache.put(currentPath, categorySet);
 	}
+	
+	/**
+	 * Set the image features.
+	 * 
+	 * @param imagePath
+	 * @param extractor
+	 */
+	public void trainImages(FeatureExtractor extractor) {
+		List<Pic> pics = imageCache.get(currentPath);
+		
+		for (Pic pic : pics) {
+			double [] features = extractor.extract(pic.getPixels(), 0, 0, pic.getWidth(), pic.getHeight(), pic.getWidth());
+			pic.setFeatures(features);
+		}
+	}
+	
+	/**
+	 * Set a test image for the current path.
+	 * 
+	 * @param pic
+	 */
+	public void setTestImage(Pic pic) {
+		testImages.put(currentPath, pic);
+	}
+	
+	/**
+	 * Get the test image for the current path.
+	 * 
+	 * @param pic
+	 */
+	public Pic getTestImage() {
+		return testImages.get(currentPath);
+	}
+	
+	/* ***************************************************************************************************
+	 * Private Methods
+	 * ***************************************************************************************************/
 	
 	private Category loadCategory(File imageFile) {
 		String category = getCategory(imageFile);
@@ -126,21 +190,6 @@ public class ImageManager {
 	private String getCategory(File imageFile) {
 		String filename = imageFile.getName().toLowerCase();
 		return filename.substring(0, filename.indexOf("_"));
-	}
-	
-	/**
-	 * Set the image features.
-	 * 
-	 * @param imagePath
-	 * @param extractor
-	 */
-	public void trainImages(String imagePath, FeatureExtractor extractor) {
-		List<Pic> pics = imageCache.get(imagePath);
-		
-		for (Pic pic : pics) {
-			double [] features = extractor.extract(pic.getPixels(), 0, 0, pic.getWidth(), pic.getHeight(), pic.getWidth());
-			pic.setFeatures(features);
-		}
 	}
 	
 }

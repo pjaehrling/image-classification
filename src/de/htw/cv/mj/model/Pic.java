@@ -25,6 +25,7 @@ public class Pic {
 		this.imageData = imageData;
 		this.width = (int)imageData.getWidth();
 		this.height = (int)imageData.getHeight();
+		this.features = new double[0];
 	}
 	
 	public double[] getFeatures() {

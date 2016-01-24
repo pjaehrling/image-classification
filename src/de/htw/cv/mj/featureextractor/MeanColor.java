@@ -1,4 +1,4 @@
-package de.htw.cv.featureextraction;
+package de.htw.cv.mj.featureextractor;
 
 public class MeanColor implements FeatureExtractor {
 

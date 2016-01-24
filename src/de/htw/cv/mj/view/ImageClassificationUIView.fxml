@@ -1,16 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.text.*?>
+<?import javafx.scene.image.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<BorderPane prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.htw.cv.mj.controller.ImageClassificationUIController">
+<BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.htw.cv.mj.controller.ImageClassificationUIController">
+   
    <top>
-      
-      <GridPane hgap="20.0" vgap="10.0" BorderPane.alignment="CENTER">
+   
+   <!-- ######### SETTINGS - TOP ######### -->   
+      <GridPane hgap="15.0" vgap="10.0" BorderPane.alignment="CENTER">
+      	<padding><Insets bottom="10.0" left="10.0" right="10.0" top="10.0" /></padding>
         <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" />
           <ColumnConstraints hgrow="SOMETIMES" />
           <ColumnConstraints hgrow="SOMETIMES" />
           <ColumnConstraints hgrow="SOMETIMES" />
@@ -20,25 +26,73 @@
           <RowConstraints vgrow="SOMETIMES" />
           <RowConstraints vgrow="SOMETIMES" />
         </rowConstraints>
-        <children>
         
+        <children>
+          <!-- Image Set -->
           <Label text="1. Input Image Set:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-          <ChoiceBox fx:id="imageSetChoiceBox" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+          <ChoiceBox fx:id="imageSetChoiceBox" prefWidth="160.0" GridPane.columnIndex="0" GridPane.rowIndex="1" />
           
+          <!-- Feature -->
           <Label text="2. Feature Type:" GridPane.columnIndex="1" GridPane.rowIndex="0" />
-          <ChoiceBox fx:id="featureTypeChoiceBox" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+          <ChoiceBox fx:id="featureTypeChoiceBox" prefWidth="160.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
           
+          <!-- Distance -->
           <Label text="3. Class Measure:" GridPane.columnIndex="2" GridPane.rowIndex="0" />
-          <ChoiceBox fx:id="classMeasureChoiceBox" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+          <ChoiceBox fx:id="classMeasureChoiceBox" prefWidth="160.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
           
-          <Button fx:id="trainButton" text="Train" GridPane.columnIndex="3" GridPane.rowIndex="1" />
-          <Button fx:id="calculateButton" text="Calculate" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+          <!-- Actions -->
+          <Button fx:id="trainButton" prefWidth="100.0" text="Train" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+          <Button fx:id="calculateButton" prefWidth="100.0" text="Calculate" GridPane.columnIndex="4" GridPane.rowIndex="1" />
           
         </children>
-        <padding>
-          <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
-        </padding>
       </GridPane>
       
    </top>
+   
+   <!-- ######### IMAGE VIEW (Split) - CENTER ######### -->   
+   <center>
+      <GridPane hgap="15.0" vgap="10.0" BorderPane.alignment="CENTER">
+      	<padding><Insets bottom="10.0" left="10.0" right="10.0" top="10.0" /></padding>
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" />
+          <ColumnConstraints hgrow="SOMETIMES" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints vgrow="SOMETIMES" />
+          <RowConstraints vgrow="SOMETIMES" />
+        </rowConstraints>
+      
+        <children>
+            
+            <!-- Right side - Category Images -->  
+            <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
+               <children>
+                  <Label text="Category:" underline="true"><padding><Insets right="10.0" /></padding></Label>
+                  <Label fx:id="categoryLabel" text="..."><font><Font name="System Bold" size="13.0" /></font></Label>
+               </children>
+            </HBox>
+            <ImageView fx:id="testImageView" fitHeight="380.0" fitWidth="380.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            
+            
+            <!-- Right side - Category Images -->  
+            <HBox prefHeight="100.0" prefWidth="200.0">
+               <children>
+                  <Label text="Test Image:" underline="true"><padding><Insets right="10.0" /></padding></Label>
+                  <Label fx:id="testImageLabel" text="..."><font><Font name="System Bold" size="13.0" /></font></Label>
+               </children>
+            </HBox>
+          
+		  	<!-- ImageView fx:id="matchImageView" fitHeight="380.0" fitWidth="380.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" GridPane.rowIndex="1" /-->
+               
+        </children>
+      </GridPane>
+   </center>
+   
+   <!-- ######### STATUS LABEL - BOTTOM ######### -->   
+   <bottom>
+     <Label fx:id="statusLabel" text="..." BorderPane.alignment="CENTER">
+       <padding><Insets bottom="10.0" left="10.0" right="10.0" top="10.0" /></padding>
+     </Label>
+   </bottom>
+   
 </BorderPane>
