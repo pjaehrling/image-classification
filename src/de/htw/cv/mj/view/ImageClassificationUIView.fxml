@@ -43,6 +43,7 @@
           <!-- Actions -->
           <Button fx:id="trainButton" prefWidth="100.0" text="Train" GridPane.columnIndex="3" GridPane.rowIndex="1" />
           <Button fx:id="calculateButton" prefWidth="100.0" text="Calculate" GridPane.columnIndex="4" GridPane.rowIndex="1" />
+          <Button fx:id="calculateAllButton" prefWidth="100.0" text="Calculate All" GridPane.columnIndex="5" GridPane.rowIndex="1" />
           
         </children>
       </GridPane>
