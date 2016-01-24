@@ -131,12 +131,17 @@ public class ImageManager {
 	 * @param extractor
 	 */
 	public void trainImages(FeatureExtractor extractor) {
+		// Training images
 		List<Pic> pics = imageCache.get(currentPath);
-		
 		for (Pic pic : pics) {
 			double [] features = extractor.extract(pic.getPixels(), 0, 0, pic.getWidth(), pic.getHeight(), pic.getWidth());
 			pic.setFeatures(features);
 		}
+		
+		// Test image
+		Pic testImg = testImages.get(currentPath);
+		double [] features = extractor.extract(testImg.getPixels(), 0, 0, testImg.getWidth(), testImg.getHeight(), testImg.getWidth());
+		testImg.setFeatures(features);
 	}
 	
 	/**

@@ -10,17 +10,19 @@ public class EuclideanOneVsAll implements Classifier {
 
 	@Override
 	public String classify(Pic image, ImageManager imageManager) {
-		List<Pic> knownImages = imageManager.getImages();
+		List<Pic> trainedImages = imageManager.getImages();
 		
 		double minDistance = Double.MAX_VALUE;
 		double distance = 0;
 		Pic bestFittingImage = null;
 		
-		for (Pic knownImage : knownImages) {
-			// TODO: getFeatures() liefert leere Arrays!!!
-			distance = calcEuclideanDistance(image.getFeatures(), knownImage.getFeatures());
+		for (Pic trainedImage : trainedImages) {
+			distance = calcEuclideanDistance(image.getFeatures(), trainedImage.getFeatures());
+			// System.out.println(trainedImage.getName() + " --> " + distance + " (min: " + minDistance + ")");
+			
 			if (distance < minDistance) {
-				bestFittingImage = knownImage;
+				minDistance = distance;
+				bestFittingImage = trainedImage;
 			}
 		}
 		
@@ -28,10 +30,10 @@ public class EuclideanOneVsAll implements Classifier {
 	}
 	
 	private double calcEuclideanDistance(double[] a, double[] b) {
-		assert(a.length == b.length); 
-		
 		double sum = 0;
 		for (int i = 0; i < a.length; i++) {
+			if (b.length <= i) break;
+			
 			sum += Math.pow( (a[i] - b[i]), 2);
 		}
 		return Math.sqrt(sum);
