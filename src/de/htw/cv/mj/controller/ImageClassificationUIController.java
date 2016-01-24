@@ -1,5 +1,8 @@
 package de.htw.cv.mj.controller;
 
+import java.io.File;
+import java.util.List;
+
 import de.htw.cv.mj.ImageManager;
 import de.htw.cv.mj.classificator.Classifier;
 import de.htw.cv.mj.classificator.EuclideanOneVsAll;
@@ -13,7 +16,9 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 /**
@@ -27,12 +32,17 @@ public class ImageClassificationUIController {
 	private String[] featureTypeChoices = new String[]{"Mean Color"};
 	private String[] classMeasureChoices = new String[]{"Eucledian (1 vs. All)"};
 	
+	private String defaultImagePath = "images/default.jpg";
+	private Image defaultImage;
+	
 	private ImageManager imageManager;
 	private FeatureExtractor extractor;
 	private Classifier classifier;
 	
 	@FXML
 	ChoiceBox<String> imageSetChoiceBox;
+	@FXML
+	ComboBox<String> testImageComboBox;
 	@FXML
 	ChoiceBox<String> featureTypeChoiceBox;
 	@FXML
@@ -45,8 +55,6 @@ public class ImageClassificationUIController {
 	Button calculateAllButton;
 	@FXML
 	ImageView testImageView;
-	@FXML
-	ImageView matchImageView;
 	
 	@FXML
 	Label statusLabel;
@@ -60,6 +68,10 @@ public class ImageClassificationUIController {
 	public void initialize() {
 		imageManager = new ImageManager();
 		
+		File defaultImageFile = new File(defaultImagePath);
+		defaultImage = new Image(defaultImageFile.toURI().toString());
+		
+		initTestImageChoiceBox();
 		initImageSetChoiceBox();
 		initFeatureTypeChoiceBox();
 		initClassMeasureChoiceBox();
@@ -75,29 +87,19 @@ public class ImageClassificationUIController {
 	
 	/* ***************************************************************************************************
 	 * Event handler
-	 * ***************************************************************************************************/
-	/**
-	 * ImageSet Choice
-	 */
-	private void changeImageSetChoice(int setIndex) {
-		// Load images
-    	imageManager.loadImages( imageSetPathes[setIndex] );
-    	
-    	// Set the test image (imageManager & imageView)
-    	Pic testImage = imageManager.getImage(imageSetTestEntries[setIndex]);
-    	if (testImage != null) {
-    		// test image was still part of imageCache (first load)
-        	imageManager.removeImage( imageSetTestEntries[setIndex] ); // the test image shouldn't be part of the training-data
-        	imageManager.setTestImage(testImage);
-    	} else {
-    		// if "null", the image is not in the list for the path anymore -> already set as test image
-    		testImage = imageManager.getTestImage();
-    	}
-    	testImageView.setImage(testImage.getImageData());
-    	
-    	testImageLabel.setText(testImage.getName());
-    	statusLabel.setText("Images and Testimage loaded (not trained)");
+	 * ***************************************************************************************************/	
+	/*
+	private void loadTestImageChoiceBox() {
+		// Fill
+		List<String> nameList = imageManager.getImageNames();
+		String[] names = nameList.toArray(new String[nameList.size()]);
+		ObservableList<String> imageNameChoiceList = FXCollections.observableArrayList(names);
+        //testImageChoiceBox.setItems(imageNameChoiceList);
+        
+        // Select first item by default
+		testImageComboBox.getSelectionModel().selectFirst();
 	}
+	*/
 	
 	
 	/* ***************************************************************************************************
@@ -111,12 +113,35 @@ public class ImageClassificationUIController {
         imageSetChoiceBox.setItems(imageSetChoiceList);
         
         // Add event listener
-        imageSetChoiceBox.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
-        	changeImageSetChoice((int) newValue);
+        imageSetChoiceBox.getSelectionModel().selectedIndexProperty().addListener((observable, oldIndex, newIndex) -> {
+        	imageManager.loadImages( imageSetPathes[(int)newIndex] );
+        	
+        	// TODO: Temp. Lösung
+        	imageManager.setTestImageByName(imageSetTestEntries[(int)newIndex]);
+        	Pic testImage = imageManager.getTestImage();
+        	if (testImage != null) {
+        		testImageView.setImage(testImage.getImageData());
+        		testImageLabel.setText(testImage.getName());
+        	} else {
+        		testImageView.setImage(defaultImage);
+        		testImageLabel.setText("... not available");
+        	}
+        	
+        	// loadTestImageChoiceBox();
+        	
+        	statusLabel.setText("Images and Testimage loaded (not trained)");
         });
         
         // Select first item by default
         imageSetChoiceBox.getSelectionModel().selectFirst();
+	}
+	
+	/**
+	 * ImageSet Choice
+	 */
+	private void initTestImageChoiceBox() {
+        // Add event listener
+		// TODO
 	}
 	
 	/**
@@ -127,8 +152,8 @@ public class ImageClassificationUIController {
 		featureTypeChoiceBox.setItems(featureTypeChoiceList);
         
         // Add event listener
-		featureTypeChoiceBox.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
-        	switch ((int) newValue) {
+		featureTypeChoiceBox.getSelectionModel().selectedIndexProperty().addListener((observable, oldIndex, newIndex) -> {
+        	switch ((int) newIndex) {
         		case 0:
         			extractor = new MeanColor();
         			break;
@@ -147,12 +172,12 @@ public class ImageClassificationUIController {
 		classMeasureChoiceBox.setItems(featureTypeChoiceList);
         
         // Add event listener
-		classMeasureChoiceBox.getSelectionModel().selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
-			switch ((int) newValue) {
-    		case 0:
-    			classifier = new EuclideanOneVsAll();    			
-    			break;
-    	}
+		classMeasureChoiceBox.getSelectionModel().selectedIndexProperty().addListener((observable, oldIndex, newIndex) -> {
+			switch ((int) newIndex) {
+	    		case 0:
+	    			classifier = new EuclideanOneVsAll();    			
+	    			break;
+			}
         });
         
         // Select first item by default

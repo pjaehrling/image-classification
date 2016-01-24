@@ -21,7 +21,7 @@ public class ImageManager {
 	
 	private HashMap<String, List<Pic>> imageCache; // images (directory path is the key)
 	private HashMap<String, Set<Category>> categoryCache;
-	private HashMap<String, Pic> testImages;
+	private HashMap<String, String> testImageNames;
 	private String currentPath;
 	
 	/**
@@ -30,7 +30,7 @@ public class ImageManager {
 	public ImageManager() {
 		imageCache = new HashMap<String, List<Pic>>();
 		categoryCache = new HashMap<String, Set<Category>>();
-		testImages = new HashMap<String, Pic>();
+		testImageNames = new HashMap<String, String>();
 	}
 	
 	/* ***************************************************************************************************
@@ -75,6 +75,20 @@ public class ImageManager {
 		return categoryCache.get(currentPath);
 	}
 
+	/**
+	 * 
+	 * @return
+	 */
+	public List<String> getImageNames() {
+		List<Pic> pics = imageCache.get(currentPath);
+		List<String> names = new ArrayList<String>();
+		
+		for (Pic pic : pics) {
+			names.add(pic.getName());
+		}
+		return names;
+	}
+	
 	/**
 	 * 
 	 * @param imagePath
@@ -141,21 +155,18 @@ public class ImageManager {
 			double [] features = extractor.extract(pic.getPixels(), 0, 0, pic.getWidth(), pic.getHeight(), pic.getWidth());
 			pic.setFeatures(features);
 		}
-		
-		// Test image
-		Pic testImg = testImages.get(currentPath);
-		double [] features = extractor.extract(testImg.getPixels(), 0, 0, testImg.getWidth(), testImg.getHeight(), testImg.getWidth());
-		testImg.setFeatures(features);
 	}
 	
 	/**
-	 * Set a test image for the current path.
+	 * Take the given image name and set the image as the test image for this image set.
 	 * 
 	 * @param pic
 	 */
-	public void setTestImage(Pic pic) {
-		testImages.put(currentPath, pic);
+	public void setTestImageByName(String imageName) {
+		testImageNames.put(currentPath, imageName);
 	}
+	
+	
 	
 	/**
 	 * Get the test image for the current path.
@@ -163,7 +174,12 @@ public class ImageManager {
 	 * @param pic
 	 */
 	public Pic getTestImage() {
-		return testImages.get(currentPath);
+		String testImageName = testImageNames.get(currentPath);
+		if (testImageName != null) {
+			return getImage(testImageName);
+		} else {
+			return null;
+		}
 	}
 	
 	/* ***************************************************************************************************

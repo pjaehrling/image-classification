@@ -19,12 +19,16 @@ public class EuclideanOneVsAll implements Classifier {
 		Pic bestFittingImage = null;
 		
 		for (Pic trainedImage : trainedImages) {
-			distance = calcEuclideanDistance(image.getFeatures(), trainedImage.getFeatures());
-			// System.out.println(trainedImage.getName() + " --> " + distance + " (min: " + minDistance + ")");
-			
-			if (distance < minDistance) {
-				minDistance = distance;
-				bestFittingImage = trainedImage;
+			if (image.getName().equals(trainedImage.getName())) {
+				continue; // do not compare with itself
+			} else {
+				distance = calcEuclideanDistance(image.getFeatures(), trainedImage.getFeatures());
+				// System.out.println(trainedImage.getName() + " --> " + distance + " (min: " + minDistance + ")");
+				
+				if (distance < minDistance) {
+					minDistance = distance;
+					bestFittingImage = trainedImage;
+				}
 			}
 		}
 		
