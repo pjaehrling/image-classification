@@ -20,4 +20,19 @@ public class MeanRank {
 		
 		return (double)rank / (double)sum;
 	}
+	
+	public static double calculate(Classifier classifier, ImageManager imageManager, String category) {
+		int rank = 0;
+		int sum = 0;
+		List<Pic> pics = imageManager.getImages();
+		
+		for (Pic pic : pics) {
+			if (pic.getCategoryName().equals(category)) {
+				rank += classifier.classifyRank(pic, imageManager);
+				sum++;
+			}
+		}
+		
+		return (double)rank / (double)sum;
+	}
 }

@@ -287,8 +287,10 @@ public class ImageClassificationUIController {
 		    	//System.out.println(rank);
 		    	double correctRate = OverallCorrectRate.calculate(classifier, imageManager);
 		    	double meanRank = MeanRank.calculate(classifier, imageManager);
+		    	double selectedImageCategoryRank = MeanRank.calculate(classifier, imageManager, imageManager.getTestImage().getCategoryName());
 		    	System.out.println("Rate: " + correctRate);
-		    	System.out.println("Rank: " + meanRank);
+		    	System.out.println("Rank: " + meanRank + " from " + imageManager.getCategories().size());
+		    	System.out.println("Rank(current Image category): " + selectedImageCategoryRank);
 		    }
 		});
 	}
