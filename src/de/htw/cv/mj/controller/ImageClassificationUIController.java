@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 
 import de.htw.cv.mj.ImageManager;
+import de.htw.cv.mj.accuracy.OverallCorrectRate;
 import de.htw.cv.mj.classificator.Classifier;
 import de.htw.cv.mj.classificator.EuclideanOneVsAll;
 import de.htw.cv.mj.featureextractor.FeatureExtractor;
@@ -82,7 +83,7 @@ public class ImageClassificationUIController {
 		
 		initTrainButton();
 		initCalculateButton();
-		initCalculateAlButton();
+		initCalculateAllButton();
 	}
 	
 	@FXML
@@ -184,7 +185,7 @@ public class ImageClassificationUIController {
 		// Add event listener
 		testImageComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
 			if (oldValue != newValue) {
-				setTrained(false);
+				//setTrained(false);
 				imageManager.setTestImageByName(newValue);
 				categoryLabel.setText("Not classified");
 				clearCategoryImages();
@@ -232,7 +233,7 @@ public class ImageClassificationUIController {
         // Add event listener
 		classMeasureComboBox.getSelectionModel().selectedIndexProperty().addListener((observable, oldIndex, newIndex) -> {
 			if (oldIndex != newIndex) {
-				setTrained(false);
+				//setTrained(false);
 				switch ((int) newIndex) {
 		    		case 0:
 		    			classifier = new EuclideanOneVsAll();    			
@@ -277,12 +278,14 @@ public class ImageClassificationUIController {
 	/**
 	 * Calculate All Button
 	 */
-	private void initCalculateAlButton() {
+	private void initCalculateAllButton() {
 		calculateAllButton.setOnAction(new EventHandler<ActionEvent>() {
 		    @Override 
 		    public void handle(ActionEvent e) {
-		    	int rank = classifier.classifyRank(imageManager.getTestImage(), imageManager);		        
-		    	System.out.println(rank);
+		    	//int rank = classifier.classifyRank(imageManager.getTestImage(), imageManager);		        
+		    	//System.out.println(rank);
+		    	double correctRate = OverallCorrectRate.calculate(classifier, imageManager);
+		    	System.out.println(correctRate);
 		    }
 		});
 	}
