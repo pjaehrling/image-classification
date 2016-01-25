@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 
 import de.htw.cv.mj.ImageManager;
+import de.htw.cv.mj.accuracy.ConfusionMatrix;
 import de.htw.cv.mj.accuracy.MeanRank;
 import de.htw.cv.mj.accuracy.OverallCorrectRate;
 import de.htw.cv.mj.classificator.Classifier;
@@ -55,7 +56,7 @@ public class ImageClassificationUIController {
 	@FXML
 	Button calculateButton;
 	@FXML
-	Button calculateAllButton;
+	Button accuracyMeasurementButton;
 	
 	@FXML
 	ImageView testImageView;
@@ -84,7 +85,7 @@ public class ImageClassificationUIController {
 		
 		initTrainButton();
 		initCalculateButton();
-		initCalculateAllButton();
+		initAccuracyMeasurementButton();
 	}
 	
 	@FXML
@@ -115,7 +116,7 @@ public class ImageClassificationUIController {
 	private void setTrained(boolean isTrained) {
 		trainButton.setDisable(isTrained);
 		calculateButton.setDisable(!isTrained);
-		calculateAllButton.setDisable(!isTrained);
+		accuracyMeasurementButton.setDisable(!isTrained);
 	}
 	
 	/**
@@ -277,20 +278,21 @@ public class ImageClassificationUIController {
 	}
 	
 	/**
-	 * Calculate All Button
+	 * Accuracy Measurement
 	 */
-	private void initCalculateAllButton() {
-		calculateAllButton.setOnAction(new EventHandler<ActionEvent>() {
+	private void initAccuracyMeasurementButton() {
+		accuracyMeasurementButton.setOnAction(new EventHandler<ActionEvent>() {
 		    @Override 
 		    public void handle(ActionEvent e) {
-		    	//int rank = classifier.classifyRank(imageManager.getTestImage(), imageManager);		        
-		    	//System.out.println(rank);
 		    	double correctRate = OverallCorrectRate.calculate(classifier, imageManager);
 		    	double meanRank = MeanRank.calculate(classifier, imageManager);
 		    	double selectedImageCategoryRank = MeanRank.calculate(classifier, imageManager, imageManager.getTestImage().getCategoryName());
+		    	List<String> categoryNames = imageManager.getCategoryNames();
+		    	double[][] matrix = ConfusionMatrix.calculate(classifier, imageManager, categoryNames);
 		    	System.out.println("Rate: " + correctRate);
 		    	System.out.println("Rank: " + meanRank + " from " + imageManager.getCategories().size());
 		    	System.out.println("Rank(current Image category): " + selectedImageCategoryRank);
+		    	// TODO draw matrix result
 		    }
 		});
 	}

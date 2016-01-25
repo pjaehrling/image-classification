@@ -24,13 +24,11 @@ public class MeanRank {
 	public static double calculate(Classifier classifier, ImageManager imageManager, String category) {
 		int rank = 0;
 		int sum = 0;
-		List<Pic> pics = imageManager.getImages();
+		List<Pic> pics = imageManager.getImagesForCategoryName(category);
 		
 		for (Pic pic : pics) {
-			if (pic.getCategoryName().equals(category)) {
-				rank += classifier.classifyRank(pic, imageManager);
-				sum++;
-			}
+			rank += classifier.classifyRank(pic, imageManager);
+			sum++;
 		}
 		
 		return (double)rank / (double)sum;

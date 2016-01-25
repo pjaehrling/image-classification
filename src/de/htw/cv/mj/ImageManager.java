@@ -93,6 +93,21 @@ public class ImageManager {
 	public Set<Category> getCategories() {
 		return categoryCache.get(currentPath);
 	}
+	
+	/**
+	 * 
+	 * @return
+	 */
+	public List<String> getCategoryNames() {
+		Set<Category> categories = this.getCategories();
+		List<String> categoryNames = new ArrayList<String>();
+		
+		for (Category cat : categories) {
+			categoryNames.add(cat.getName());
+		}
+		
+		return categoryNames;
+	}
 
 	/**
 	 * 
