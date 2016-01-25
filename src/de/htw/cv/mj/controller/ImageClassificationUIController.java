@@ -286,11 +286,13 @@ public class ImageClassificationUIController {
 		    public void handle(ActionEvent e) {
 		    	double overallcorrectRate = CorrectRate.calculate(classifier, imageManager);
 		    	double meanRank = MeanRank.calculate(classifier, imageManager);
+		    	double selectedImageCorrectRate = CorrectRate.calculate(classifier, imageManager, imageManager.getTestImage().getCategoryName());
 		    	double selectedImageCategoryRank = MeanRank.calculate(classifier, imageManager, imageManager.getTestImage().getCategoryName());
 		    	List<String> categoryNames = imageManager.getCategoryNames();
 		    	double[][] matrix = ConfusionMatrix.calculate(classifier, imageManager, categoryNames);
-		    	System.out.println("Rate: " + overallcorrectRate);
+		    	System.out.println("Correct Rate: " + overallcorrectRate);
 		    	System.out.println("Rank: " + meanRank + " from " + imageManager.getCategories().size());
+		    	System.out.println("Correct Rate(current Image category): " + selectedImageCorrectRate);
 		    	System.out.println("Rank(current Image category): " + selectedImageCategoryRank);
 		    	// TODO draw matrix result
 		    }
