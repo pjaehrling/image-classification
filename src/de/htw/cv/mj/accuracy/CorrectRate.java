@@ -6,7 +6,7 @@ import de.htw.cv.mj.ImageManager;
 import de.htw.cv.mj.classificator.Classifier;
 import de.htw.cv.mj.model.Pic;
 
-public class OverallCorrectRate {
+public class CorrectRate {
 	
 	public static double calculate(Classifier classifier, ImageManager imageManager) {
 		
@@ -19,6 +19,23 @@ public class OverallCorrectRate {
 			String category = classifier.classify(pic, imageManager);
 			sum++;
 			if(category.equals(pic.getCategoryName()))
+				correct++;
+		}
+		
+		return (double)correct / (double)sum;
+	}
+	
+	public static double calculate(Classifier classifier, ImageManager imageManager, String category) {
+		
+		int correct = 0;
+		int sum = 0;
+		
+		List<Pic> pics = imageManager.getImagesForCategoryName(category);
+		
+		for (Pic pic : pics) {
+			String foundCategory = classifier.classify(pic, imageManager);
+			sum++;
+			if(foundCategory.equals(category))
 				correct++;
 		}
 		

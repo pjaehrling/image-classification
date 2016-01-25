@@ -6,7 +6,7 @@ import java.util.List;
 import de.htw.cv.mj.ImageManager;
 import de.htw.cv.mj.accuracy.ConfusionMatrix;
 import de.htw.cv.mj.accuracy.MeanRank;
-import de.htw.cv.mj.accuracy.OverallCorrectRate;
+import de.htw.cv.mj.accuracy.CorrectRate;
 import de.htw.cv.mj.classificator.Classifier;
 import de.htw.cv.mj.classificator.EuclideanOneVsAll;
 import de.htw.cv.mj.featureextractor.FeatureExtractor;
@@ -284,12 +284,12 @@ public class ImageClassificationUIController {
 		accuracyMeasurementButton.setOnAction(new EventHandler<ActionEvent>() {
 		    @Override 
 		    public void handle(ActionEvent e) {
-		    	double correctRate = OverallCorrectRate.calculate(classifier, imageManager);
+		    	double overallcorrectRate = CorrectRate.calculate(classifier, imageManager);
 		    	double meanRank = MeanRank.calculate(classifier, imageManager);
 		    	double selectedImageCategoryRank = MeanRank.calculate(classifier, imageManager, imageManager.getTestImage().getCategoryName());
 		    	List<String> categoryNames = imageManager.getCategoryNames();
 		    	double[][] matrix = ConfusionMatrix.calculate(classifier, imageManager, categoryNames);
-		    	System.out.println("Rate: " + correctRate);
+		    	System.out.println("Rate: " + overallcorrectRate);
 		    	System.out.println("Rank: " + meanRank + " from " + imageManager.getCategories().size());
 		    	System.out.println("Rank(current Image category): " + selectedImageCategoryRank);
 		    	// TODO draw matrix result
