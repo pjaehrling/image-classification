@@ -14,12 +14,12 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
 
 /**
  * @author Marie Manderla, Philipp Jährling
@@ -28,33 +28,37 @@ public class ImageClassificationUIController {
 	
 	private String[] imageSetChoices = new String[]{"Easy (250 Images)", "Hard (720 Images)"};
 	private String[] imageSetPathes = new String[]{"images/easy", "images/hard"};
-	private String[] imageSetTestEntries = new String[]{"vittel_1.jpg", "sunsets_22.jpg"};
 	private String[] featureTypeChoices = new String[]{"Mean Color"};
-	private String[] classMeasureChoices = new String[]{"Eucledian (1 vs. All)"};
+	private String[] classMeasureChoices = new String[]{"Eucledian (1vsAll)"};
 	
 	private String defaultImagePath = "images/default.jpg";
 	private Image defaultImage;
+	private ImageView[] categoryImageViews;
 	
 	private ImageManager imageManager;
 	private FeatureExtractor extractor;
 	private Classifier classifier;
 	
 	@FXML
-	ChoiceBox<String> imageSetChoiceBox;
+	ComboBox<String> imageSetComboBox;
 	@FXML
 	ComboBox<String> testImageComboBox;
 	@FXML
-	ChoiceBox<String> featureTypeChoiceBox;
+	ComboBox<String> featureTypeComboBox;
 	@FXML
-	ChoiceBox<String> classMeasureChoiceBox;
+	ComboBox<String> classMeasureComboBox;
+	
 	@FXML
 	Button trainButton;
 	@FXML
 	Button calculateButton;
 	@FXML
 	Button calculateAllButton;
+	
 	@FXML
 	ImageView testImageView;
+	@FXML
+	GridPane categoryImagesGrid;
 	
 	@FXML
 	Label statusLabel;
@@ -71,10 +75,11 @@ public class ImageClassificationUIController {
 		File defaultImageFile = new File(defaultImagePath);
 		defaultImage = new Image(defaultImageFile.toURI().toString());
 		
-		initTestImageChoiceBox();
-		initImageSetChoiceBox();
-		initFeatureTypeChoiceBox();
-		initClassMeasureChoiceBox();
+		initTestImageComboBox();
+		initImageSetComboBox();
+		initFeatureTypeComboBox();
+		initClassMeasureComboBox();
+		
 		initTrainButton();
 		initCalculateButton();
 		initCalculateAlButton();
@@ -86,102 +91,156 @@ public class ImageClassificationUIController {
 	}
 	
 	/* ***************************************************************************************************
-	 * Event handler
+	 * Helper
 	 * ***************************************************************************************************/	
-	/*
-	private void loadTestImageChoiceBox() {
+	/**
+	 * 
+	 */
+	private void fillTestImageChoices() {
 		// Fill
 		List<String> nameList = imageManager.getImageNames();
-		String[] names = nameList.toArray(new String[nameList.size()]);
-		ObservableList<String> imageNameChoiceList = FXCollections.observableArrayList(names);
-        //testImageChoiceBox.setItems(imageNameChoiceList);
+		ObservableList<String> imageNameChoiceList = FXCollections.observableArrayList(nameList);
+        testImageComboBox.setItems(imageNameChoiceList);
         
         // Select first item by default
 		testImageComboBox.getSelectionModel().selectFirst();
 	}
-	*/
 	
+	/**
+	 * 
+	 * @param isTrained
+	 */
+	private void setTrained(boolean isTrained) {
+		trainButton.setDisable(isTrained);
+		calculateButton.setDisable(!isTrained);
+		calculateAllButton.setDisable(!isTrained);
+	}
+	
+	/**
+	 * 
+	 * @param image
+	 * @return
+	 */
+	private ImageView createCategoryImageView(Image image) {
+		ImageView iv = new ImageView();
+        iv.setImage(image);
+        iv.setFitWidth(45);
+        iv.setFitHeight(45);
+        iv.setPreserveRatio(true);
+        iv.setSmooth(true);
+        return iv;
+	}
+	
+	/**
+	 * 
+	 * @param category
+	 */
+	private void showCategoryImages(String categoryName) {
+		List<Pic> images = imageManager.getImagesForCategoryName(categoryName);
+		categoryImageViews = new ImageView[images.size()];
+		
+		int x = 0;
+		int y = 0;
+		for (int i = 0; i < images.size(); i++) {
+			x = i % 10;
+			y = i / 10;
+			categoryImageViews[i] = createCategoryImageView(images.get(i).getImageData());
+			categoryImagesGrid.add(categoryImageViews[i], x, y);
+		}
+	}
+	
+	/**
+	 * 
+	 */
+	private void clearCategoryImages() {
+		categoryImageViews = new ImageView[0];
+		categoryImagesGrid.getChildren().remove(0, categoryImagesGrid.getChildren().size());
+	}
 	
 	/* ***************************************************************************************************
-	 * component initialize methods
+	 * Component initialize methods
 	 * ***************************************************************************************************/
 	/**
 	 * ImageSet Choice
 	 */
-	private void initImageSetChoiceBox() {
+	private void initImageSetComboBox() {
 		ObservableList<String> imageSetChoiceList = FXCollections.observableArrayList(imageSetChoices);
-        imageSetChoiceBox.setItems(imageSetChoiceList);
+        imageSetComboBox.setItems(imageSetChoiceList);
         
         // Add event listener
-        imageSetChoiceBox.getSelectionModel().selectedIndexProperty().addListener((observable, oldIndex, newIndex) -> {
+        imageSetComboBox.getSelectionModel().selectedIndexProperty().addListener((observable, oldIndex, newIndex) -> {
+        	setTrained(false);
         	imageManager.loadImages( imageSetPathes[(int)newIndex] );
-        	
-        	// TODO: Temp. Lösung
-        	imageManager.setTestImageByName(imageSetTestEntries[(int)newIndex]);
-        	Pic testImage = imageManager.getTestImage();
-        	if (testImage != null) {
-        		testImageView.setImage(testImage.getImageData());
-        		testImageLabel.setText(testImage.getName());
-        	} else {
-        		testImageView.setImage(defaultImage);
-        		testImageLabel.setText("... not available");
-        	}
-        	
-        	// loadTestImageChoiceBox();
-        	
+        	fillTestImageChoices();
         	statusLabel.setText("Images and Testimage loaded (not trained)");
         });
-        
-        // Select first item by default
-        imageSetChoiceBox.getSelectionModel().selectFirst();
+        imageSetComboBox.getSelectionModel().selectFirst();
 	}
 	
 	/**
 	 * ImageSet Choice
 	 */
-	private void initTestImageChoiceBox() {
-        // Add event listener
-		// TODO
+	private void initTestImageComboBox() {
+		// Add event listener
+		testImageComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+			if (oldValue != newValue) {
+				setTrained(false);
+				imageManager.setTestImageByName(newValue);
+				categoryLabel.setText("Not classified");
+				clearCategoryImages();
+				
+				Pic testImage = imageManager.getTestImage();
+		    	if (testImage != null) {
+		    		testImageView.setImage(testImage.getImageData());
+		    		testImageLabel.setText(testImage.getName());
+		    	} else {
+		    		testImageView.setImage(defaultImage);
+		    		testImageLabel.setText("... not available");
+		    	}
+			}
+        });
 	}
 	
 	/**
 	 * Feature Choice
 	 */
-	private void initFeatureTypeChoiceBox() {
+	private void initFeatureTypeComboBox() {
 		ObservableList<String> featureTypeChoiceList = FXCollections.observableArrayList(featureTypeChoices);
-		featureTypeChoiceBox.setItems(featureTypeChoiceList);
+		featureTypeComboBox.setItems(featureTypeChoiceList);
         
         // Add event listener
-		featureTypeChoiceBox.getSelectionModel().selectedIndexProperty().addListener((observable, oldIndex, newIndex) -> {
-        	switch ((int) newIndex) {
-        		case 0:
-        			extractor = new MeanColor();
-        			break;
-        	}
+		featureTypeComboBox.getSelectionModel().selectedIndexProperty().addListener((observable, oldIndex, newIndex) -> {
+			if (oldIndex != newIndex) {
+				setTrained(false);
+	        	switch ((int) newIndex) {
+	        		case 0:
+	        			extractor = new MeanColor();
+	        			break;
+	        	}
+			}
         });
-        
-        // Select first item by default
-		featureTypeChoiceBox.getSelectionModel().selectFirst();
+		featureTypeComboBox.getSelectionModel().selectFirst();
 	}
 	
 	/**
 	 * Measure Choice
 	 */
-	private void initClassMeasureChoiceBox() {
+	private void initClassMeasureComboBox() {
 		ObservableList<String> featureTypeChoiceList = FXCollections.observableArrayList(classMeasureChoices);
-		classMeasureChoiceBox.setItems(featureTypeChoiceList);
+		classMeasureComboBox.setItems(featureTypeChoiceList);
         
         // Add event listener
-		classMeasureChoiceBox.getSelectionModel().selectedIndexProperty().addListener((observable, oldIndex, newIndex) -> {
-			switch ((int) newIndex) {
-	    		case 0:
-	    			classifier = new EuclideanOneVsAll();    			
-	    			break;
+		classMeasureComboBox.getSelectionModel().selectedIndexProperty().addListener((observable, oldIndex, newIndex) -> {
+			if (oldIndex != newIndex) {
+				setTrained(false);
+				switch ((int) newIndex) {
+		    		case 0:
+		    			classifier = new EuclideanOneVsAll();    			
+		    			break;
+				}
 			}
         });
-        
-        // Select first item by default
-		classMeasureChoiceBox.getSelectionModel().selectFirst();
+		classMeasureComboBox.getSelectionModel().selectFirst();
 	}
 	
 	/**
@@ -189,10 +248,11 @@ public class ImageClassificationUIController {
 	 */
 	private void initTrainButton() {
 		trainButton.setOnAction(new EventHandler<ActionEvent>() {
-			
-		    @Override public void handle(ActionEvent e) {
+		    @Override 
+		    public void handle(ActionEvent e) {
 		        imageManager.trainImages(extractor);
-		        String feature = featureTypeChoices[featureTypeChoiceBox.getSelectionModel().getSelectedIndex()];
+		        String feature = featureTypeChoices[featureTypeComboBox.getSelectionModel().getSelectedIndex()];
+		        setTrained(true);
 		        statusLabel.setText("Trained using " + feature);
 		    }
 		});
@@ -203,11 +263,12 @@ public class ImageClassificationUIController {
 	 */
 	private void initCalculateButton() {
 		calculateButton.setOnAction(new EventHandler<ActionEvent>() {
-			
-		    @Override public void handle(ActionEvent e) {
+		    @Override 
+		    public void handle(ActionEvent e) {
 		    	String categoryName = classifier.classify(imageManager.getTestImage(), imageManager);		        
-		    	String classifierLabel = classMeasureChoices[classMeasureChoiceBox.getSelectionModel().getSelectedIndex()];
+		    	String classifierLabel = classMeasureChoices[classMeasureComboBox.getSelectionModel().getSelectedIndex()];
 		    	categoryLabel.setText(categoryName);
+		    	showCategoryImages(categoryName);
 		    	statusLabel.setText("Calculated a category using " + classifierLabel);
 		    }
 		});
@@ -218,8 +279,8 @@ public class ImageClassificationUIController {
 	 */
 	private void initCalculateAlButton() {
 		calculateAllButton.setOnAction(new EventHandler<ActionEvent>() {
-			
-		    @Override public void handle(ActionEvent e) {
+		    @Override 
+		    public void handle(ActionEvent e) {
 		    	int rank = classifier.classifyRank(imageManager.getTestImage(), imageManager);		        
 		    	System.out.println(rank);
 		    }

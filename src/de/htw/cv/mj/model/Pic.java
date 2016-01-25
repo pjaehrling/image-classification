@@ -36,7 +36,7 @@ public class Pic {
 		this.features = features;
 	}
 
-	public String getCategory() {
+	public String getCategoryName() {
 		return category;
 	}
 	

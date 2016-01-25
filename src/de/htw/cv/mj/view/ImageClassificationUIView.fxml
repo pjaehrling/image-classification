@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.control.ComboBox?>
 
-<BorderPane prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.htw.cv.mj.controller.ImageClassificationUIController">
+<BorderPane prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.htw.cv.mj.controller.ImageClassificationUIController">
    
    <top>
    
@@ -32,7 +32,7 @@
         <children>
           <!-- Image Set -->
           <Label text="1. Image Set:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-          <ChoiceBox fx:id="imageSetChoiceBox" prefWidth="160.0" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+          <ComboBox fx:id="imageSetComboBox" prefWidth="160.0" GridPane.columnIndex="0" GridPane.rowIndex="1" />
           
           <!-- Test Image -->
           <Label text="2. Test Image:" GridPane.columnIndex="1" />
@@ -40,16 +40,17 @@
           
           <!-- Feature -->
           <Label text="3. Feature Type:" GridPane.columnIndex="2" />
-          <ChoiceBox fx:id="featureTypeChoiceBox" prefWidth="160.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+          <ComboBox fx:id="featureTypeComboBox" prefWidth="160.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
           
           <!-- Distance -->
           <Label text="4. Class Measure:" GridPane.columnIndex="3" />
-          <ChoiceBox fx:id="classMeasureChoiceBox" prefWidth="160.0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+          <ComboBox fx:id="classMeasureComboBox" prefWidth="160.0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
           
           <!-- Actions -->
           <Button fx:id="trainButton" prefWidth="100.0" text="Train" GridPane.columnIndex="4" />
           <Button fx:id="calculateButton" prefWidth="100.0" text="Calculate" GridPane.columnIndex="4" GridPane.rowIndex="1" />
           <Button fx:id="calculateAllButton" prefWidth="100.0" text="Calculate All" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+            <Separator prefWidth="200.0" GridPane.columnSpan="4" GridPane.rowIndex="2" />
           
         </children>
       </GridPane>
@@ -61,34 +62,43 @@
       <GridPane hgap="15.0" vgap="10.0" BorderPane.alignment="CENTER">
       	<padding><Insets bottom="10.0" left="10.0" right="10.0" top="10.0" /></padding>
         <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="256.0" />
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="256.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="256.0" minWidth="256.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="2.0" minWidth="2.0" />
+          <ColumnConstraints hgrow="SOMETIMES"/>
         </columnConstraints>
         <rowConstraints>
-          <RowConstraints maxHeight="30.0" vgrow="SOMETIMES" valignment="TOP"/>
-          <RowConstraints vgrow="SOMETIMES" valignment="TOP"/>
+          <RowConstraints maxHeight="30.0" valignment="TOP" vgrow="SOMETIMES" />
+          <RowConstraints valignment="TOP" vgrow="SOMETIMES" />
         </rowConstraints>
       
         <children>
             
-            <!-- Right side - Category Images -->  
-            <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1">
-               <children>
-                  <Label text="Category:"><padding><Insets right="10.0" /></padding></Label>
-                  <Label fx:id="categoryLabel" text="..."><font><Font name="System Bold" size="13.0" /></font></Label>
-               </children>
-            </HBox>
-            <ImageView fx:id="testImageView" fitHeight="256.0" fitWidth="256.0" preserveRatio="true" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-            
-            
-            <!-- Right side - Category Images -->  
+            <!-- Left side - Test Image -->  
             <HBox prefHeight="100.0" prefWidth="200.0">
                <children>
                   <Label text="Test Image:"><padding><Insets right="10.0" /></padding></Label>
-                  <Label fx:id="testImageLabel" text="..."><font><Font name="System Bold" size="13.0" /></font></Label>
+                  <Label fx:id="testImageLabel" text="Not loaded"><font><Font name="System Bold" size="13.0" /></font></Label>
                </children>
             </HBox>
-                         
+            <ImageView fx:id="testImageView" fitHeight="256.0" fitWidth="256.0" preserveRatio="true" smooth="true" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+            
+            <!-- Middle - Separator -->
+            <Separator orientation="VERTICAL" prefHeight="200.0" GridPane.columnIndex="1" GridPane.rowSpan="2" />
+            
+            <!-- Right side - Category Images -->  
+            <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="2">
+               <children>
+                  <Label text="Category:"><padding><Insets right="10.0" /></padding></Label>
+                  <Label fx:id="categoryLabel" text="Not classified"><font><Font name="System Bold" size="13.0" /></font></Label>
+               </children>
+            </HBox>
+            <GridPane fx:id="categoryImagesGrid" hgap="5.0" vgap="5.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
+            	<children>
+            		<!-- Will be added on runtime (ImageView's) -->
+            	</children>
+            </GridPane>
+            
+         
         </children>
       </GridPane>
    </center>

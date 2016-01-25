@@ -21,24 +21,24 @@ public class EuclideanOneVsAll implements Classifier {
 		for (Pic trainedImage : trainedImages) {
 			if (image.getName().equals(trainedImage.getName())) {
 				continue; // do not compare with itself
-			} else {
-				distance = calcEuclideanDistance(image.getFeatures(), trainedImage.getFeatures());
-				// System.out.println(trainedImage.getName() + " --> " + distance + " (min: " + minDistance + ")");
-				
-				if (distance < minDistance) {
-					minDistance = distance;
-					bestFittingImage = trainedImage;
-				}
+			}
+			
+			distance = calcEuclideanDistance(image.getFeatures(), trainedImage.getFeatures());
+			// System.out.println(trainedImage.getName() + " --> " + distance + " (min: " + minDistance + ")");
+			
+			if (distance < minDistance) {
+				minDistance = distance;
+				bestFittingImage = trainedImage;
 			}
 		}
 		
-		return bestFittingImage.getCategory();
+		return bestFittingImage.getCategoryName();
 	}
 	
 	@Override
 	public int classifyRank(Pic image, ImageManager imageManager) {
 		List<Pic> trainedImages = imageManager.getImages();
-		String category = image.getCategory();
+		String category = image.getCategoryName();
 		Map<String, EucledianOneVsAllResult> distances = new HashMap<String, EucledianOneVsAllResult>();
 		
 		for (Pic trainedImage : trainedImages) {
@@ -48,7 +48,7 @@ public class EuclideanOneVsAll implements Classifier {
 				
 			double distance = calcEuclideanDistance(image.getFeatures(), trainedImage.getFeatures());
 			
-			String trainedCategory = trainedImage.getCategory();
+			String trainedCategory = trainedImage.getCategoryName();
 			EucledianOneVsAllResult savedDistance = distances.get(trainedCategory);
 			if (savedDistance == null || distance < savedDistance.getDistance()) {
 				distances.put(trainedCategory, new EucledianOneVsAllResult(trainedCategory, distance));
@@ -63,6 +63,14 @@ public class EuclideanOneVsAll implements Classifier {
 		return rank + 1;
 	}	
 	
+	/**
+	 * Calc the euclidean distance between two points.
+	 * The dimensions doesn't matter, but both should have the same.
+	 * 
+	 * @param a
+	 * @param b
+	 * @return
+	 */
 	private double calcEuclideanDistance(double[] a, double[] b) {
 		double sum = 0;
 		for (int i = 0; i < a.length; i++) {

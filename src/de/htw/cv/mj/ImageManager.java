@@ -71,6 +71,25 @@ public class ImageManager {
 		return imageCache.get(currentPath);
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
+	public List<Pic> getImagesForCategoryName(String categoryName) {
+		List<Pic> allImages = imageCache.get(currentPath);
+		List<Pic> categoryImages = new ArrayList<Pic>();
+		
+		for (Pic pic : allImages) {
+			if (pic.getCategoryName().equals(categoryName))
+				categoryImages.add(pic);
+		}
+		return categoryImages;
+	}
+	
+	/**
+	 * 
+	 * @return
+	 */
 	public Set<Category> getCategories() {
 		return categoryCache.get(currentPath);
 	}
