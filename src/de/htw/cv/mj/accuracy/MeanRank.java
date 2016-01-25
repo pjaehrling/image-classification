@@ -6,22 +6,18 @@ import de.htw.cv.mj.ImageManager;
 import de.htw.cv.mj.classificator.Classifier;
 import de.htw.cv.mj.model.Pic;
 
-public class OverallCorrectRate {
-	
+public class MeanRank {
+
 	public static double calculate(Classifier classifier, ImageManager imageManager) {
-		
-		int correct = 0;
+		int rank = 0;
 		int sum = 0;
-		
 		List<Pic> pics = imageManager.getImages();
 		
 		for (Pic pic : pics) {
-			String category = classifier.classify(pic, imageManager);
+			rank += classifier.classifyRank(pic, imageManager);
 			sum++;
-			if(category.equals(pic.getCategoryName()))
-				correct++;
 		}
 		
-		return (double)correct / (double)sum;
+		return (double)rank / (double)sum;
 	}
 }

@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.List;
 
 import de.htw.cv.mj.ImageManager;
+import de.htw.cv.mj.accuracy.MeanRank;
 import de.htw.cv.mj.accuracy.OverallCorrectRate;
 import de.htw.cv.mj.classificator.Classifier;
 import de.htw.cv.mj.classificator.EuclideanOneVsAll;
@@ -285,7 +286,9 @@ public class ImageClassificationUIController {
 		    	//int rank = classifier.classifyRank(imageManager.getTestImage(), imageManager);		        
 		    	//System.out.println(rank);
 		    	double correctRate = OverallCorrectRate.calculate(classifier, imageManager);
-		    	System.out.println(correctRate);
+		    	double meanRank = MeanRank.calculate(classifier, imageManager);
+		    	System.out.println("Rate: " + correctRate);
+		    	System.out.println("Rank: " + meanRank);
 		    }
 		});
 	}
