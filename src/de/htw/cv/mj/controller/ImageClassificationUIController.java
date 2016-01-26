@@ -22,6 +22,9 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.PixelFormat;
+import javafx.scene.image.PixelWriter;
+import javafx.scene.image.WritableImage;
 import javafx.scene.layout.GridPane;
 
 /**
@@ -60,6 +63,8 @@ public class ImageClassificationUIController {
 	
 	@FXML
 	ImageView testImageView;
+	@FXML
+	ImageView accuracyImageView;
 	@FXML
 	GridPane categoryImagesGrid;
 	
@@ -294,9 +299,29 @@ public class ImageClassificationUIController {
 		    	System.out.println("Rank: " + meanRank + " from " + imageManager.getCategories().size());
 		    	System.out.println("Correct Rate(current Image category): " + selectedImageCorrectRate);
 		    	System.out.println("Rank(current Image category): " + selectedImageCategoryRank);
-		    	// TODO draw matrix result
+		    	setConfusionMatrixImage(matrix, categoryNames);
 		    }
 		});
+	}
+	
+	private void setConfusionMatrixImage(double[][] matrix, List<String> categoryNames) {
+		int matrixScale = 2;
+		int size = categoryNames.size();
+		int[] pixels = new int[size*size];
+		
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
+				int saturation = (int)(255 * matrix[i][j]);
+				pixels[j * size + i] = (0xFF << 24) | (saturation << 16) | (saturation << 8) | saturation;
+			}
+		}
+		
+		WritableImage wr = new WritableImage(size, size);
+		PixelWriter pw = wr.getPixelWriter();
+		pw.setPixels(0, 0, size, size, PixelFormat.getIntArgbInstance(), pixels, 0, size);
+		
+		accuracyImageView.setImage(wr);
+		accuracyImageView.setFitWidth(size * 4);
 	}
 
 }

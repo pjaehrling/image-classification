@@ -92,15 +92,22 @@
                   <Label fx:id="categoryLabel" text="Not classified"><font><Font name="System Bold" size="13.0" /></font></Label>
                </children>
             </HBox>
+            
             <GridPane fx:id="categoryImagesGrid" hgap="5.0" vgap="5.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
             	<children>
             		<!-- Will be added on runtime (ImageView's) -->
             	</children>
             </GridPane>
             
+            
+            <Label text="Confusion Matrix" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+         	<ImageView fx:id="accuracyImageView" preserveRatio="true" smooth="false" GridPane.columnIndex="0" GridPane.rowIndex="4" />
          
         </children>
       </GridPane>
+     
+	  
+     
    </center>
    
    <!-- ######### STATUS LABEL - BOTTOM ######### -->   
