@@ -74,6 +74,10 @@ public class ImageClassificationUIController {
 	Label testImageLabel;
 	@FXML
 	Label categoryLabel;
+	@FXML
+	Label averageRankLabel;
+	@FXML
+	Label overallCorrectLabel;
 	
 	
 	@FXML
@@ -290,22 +294,19 @@ public class ImageClassificationUIController {
 		    @Override 
 		    public void handle(ActionEvent e) {
 		    	double overallcorrectRate = CorrectRate.calculate(classifier, imageManager);
+		    	overallCorrectLabel.setText(String.valueOf(overallcorrectRate));
+		    	
 		    	double meanRank = MeanRank.calculate(classifier, imageManager);
-		    	double selectedImageCorrectRate = CorrectRate.calculate(classifier, imageManager, imageManager.getTestImage().getCategoryName());
-		    	double selectedImageCategoryRank = MeanRank.calculate(classifier, imageManager, imageManager.getTestImage().getCategoryName());
+		    	averageRankLabel.setText(String.valueOf(meanRank));
+		    	
 		    	List<String> categoryNames = imageManager.getCategoryNames();
 		    	double[][] matrix = ConfusionMatrix.calculate(classifier, imageManager, categoryNames);
-		    	System.out.println("Correct Rate: " + overallcorrectRate);
-		    	System.out.println("Rank: " + meanRank + " from " + imageManager.getCategories().size());
-		    	System.out.println("Correct Rate(current Image category): " + selectedImageCorrectRate);
-		    	System.out.println("Rank(current Image category): " + selectedImageCategoryRank);
 		    	setConfusionMatrixImage(matrix, categoryNames);
 		    }
 		});
 	}
 	
 	private void setConfusionMatrixImage(double[][] matrix, List<String> categoryNames) {
-		int matrixScale = 2;
 		int size = categoryNames.size();
 		int[] pixels = new int[size*size];
 		
