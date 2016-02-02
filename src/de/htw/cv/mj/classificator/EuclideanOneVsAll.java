@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import de.htw.cv.mj.ImageManager;
+import de.htw.cv.mj.distance.EucledianDistance;
 import de.htw.cv.mj.model.Pic;
 
 public class EuclideanOneVsAll implements Classifier {
@@ -23,7 +24,7 @@ public class EuclideanOneVsAll implements Classifier {
 				continue; // do not compare with itself
 			}
 			
-			distance = calcEuclideanDistance(image.getFeatures(), trainedImage.getFeatures());
+			distance = EucledianDistance.calculate(image.getFeatures(), trainedImage.getFeatures());
 			// System.out.println(trainedImage.getName() + " --> " + distance + " (min: " + minDistance + ")");
 			
 			if (distance < minDistance) {
@@ -46,7 +47,7 @@ public class EuclideanOneVsAll implements Classifier {
 				continue; // do not compare with itself
 			}
 				
-			double distance = calcEuclideanDistance(image.getFeatures(), trainedImage.getFeatures());
+			double distance = EucledianDistance.calculate(image.getFeatures(), trainedImage.getFeatures());
 			
 			String trainedCategory = trainedImage.getCategoryName();
 			Result savedDistance = distances.get(trainedCategory);
@@ -62,23 +63,4 @@ public class EuclideanOneVsAll implements Classifier {
 		
 		return rank + 1;
 	}	
-	
-	/**
-	 * Calc the euclidean distance between two points.
-	 * The dimensions doesn't matter, but both should have the same.
-	 * 
-	 * @param a
-	 * @param b
-	 * @return
-	 */
-	private double calcEuclideanDistance(double[] a, double[] b) {
-		double sum = 0;
-		for (int i = 0; i < a.length; i++) {
-			if (b.length <= i) break;
-			
-			sum += Math.pow( (a[i] - b[i]), 2);
-		}
-		return Math.sqrt(sum);
-	}
-
 }

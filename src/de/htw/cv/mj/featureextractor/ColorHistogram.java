@@ -4,8 +4,11 @@ public class ColorHistogram implements FeatureExtractor  {
 
 	private int buckets;
 	
-	
 	public ColorHistogram(int buckets) {
+		this.buckets = buckets;
+	}
+
+	public void setBuckets(int buckets) {
 		this.buckets = buckets;
 	}
 
