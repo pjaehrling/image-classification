@@ -1,11 +1,11 @@
 package de.htw.cv.mj.classificator;
 
-public class EucledianOneVsAllResult implements Comparable<EucledianOneVsAllResult> {
+public class Result implements Comparable<Result> {
 
 	private String category;
 	private double distance;
 	
-	public EucledianOneVsAllResult(String category, double distance) {
+	public Result(String category, double distance) {
 		this.category = category;
 		this.distance = distance;
 	}
@@ -23,7 +23,7 @@ public class EucledianOneVsAllResult implements Comparable<EucledianOneVsAllResu
 	}
 
 	@Override
-	public int compareTo(EucledianOneVsAllResult o) {
+	public int compareTo(Result o) {
 		return Double.compare(this.distance, o.getDistance());
 	}
 
@@ -43,7 +43,7 @@ public class EucledianOneVsAllResult implements Comparable<EucledianOneVsAllResu
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		EucledianOneVsAllResult other = (EucledianOneVsAllResult) obj;
+		Result other = (Result) obj;
 		if (category == null) {
 			if (other.category != null)
 				return false;

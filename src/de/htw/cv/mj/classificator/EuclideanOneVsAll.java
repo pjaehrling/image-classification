@@ -39,7 +39,7 @@ public class EuclideanOneVsAll implements Classifier {
 	public int classifyRank(Pic image, ImageManager imageManager) {
 		List<Pic> trainedImages = imageManager.getImages();
 		String category = image.getCategoryName();
-		Map<String, EucledianOneVsAllResult> distances = new HashMap<String, EucledianOneVsAllResult>();
+		Map<String, Result> distances = new HashMap<String, Result>();
 		
 		for (Pic trainedImage : trainedImages) {
 			if (image.getName().equals(trainedImage.getName())) {
@@ -49,16 +49,16 @@ public class EuclideanOneVsAll implements Classifier {
 			double distance = calcEuclideanDistance(image.getFeatures(), trainedImage.getFeatures());
 			
 			String trainedCategory = trainedImage.getCategoryName();
-			EucledianOneVsAllResult savedDistance = distances.get(trainedCategory);
+			Result savedDistance = distances.get(trainedCategory);
 			if (savedDistance == null || distance < savedDistance.getDistance()) {
-				distances.put(trainedCategory, new EucledianOneVsAllResult(trainedCategory, distance));
+				distances.put(trainedCategory, new Result(trainedCategory, distance));
 			}
 		}
 		
-		List<EucledianOneVsAllResult> distancesList = new ArrayList<EucledianOneVsAllResult>(distances.values());
+		List<Result> distancesList = new ArrayList<Result>(distances.values());
 		Collections.sort(distancesList);
 		
-		int rank = distancesList.indexOf(new EucledianOneVsAllResult(category, 0.0));
+		int rank = distancesList.indexOf(new Result(category, 0.0));
 		
 		return rank + 1;
 	}	
