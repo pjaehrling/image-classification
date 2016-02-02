@@ -9,6 +9,7 @@ import de.htw.cv.mj.accuracy.MeanRank;
 import de.htw.cv.mj.accuracy.CorrectRate;
 import de.htw.cv.mj.classificator.Classifier;
 import de.htw.cv.mj.classificator.EuclideanOneVsAll;
+import de.htw.cv.mj.featureextractor.ColorHistogram;
 import de.htw.cv.mj.featureextractor.FeatureExtractor;
 import de.htw.cv.mj.featureextractor.MeanColor;
 import de.htw.cv.mj.model.Pic;
@@ -34,7 +35,7 @@ public class ImageClassificationUIController {
 	
 	private String[] imageSetChoices = new String[]{"Easy (250 Images)", "Hard (720 Images)"};
 	private String[] imageSetPathes = new String[]{"images/easy", "images/hard"};
-	private String[] featureTypeChoices = new String[]{"Mean Color"};
+	private String[] featureTypeChoices = new String[]{"Mean Color", "ColorHistogram (2)", "ColorHistogram (4)", "ColorHistogram (8)"};
 	private String[] classMeasureChoices = new String[]{"Eucledian (1vsAll)"};
 	
 	private String defaultImagePath = "images/default.jpg";
@@ -227,6 +228,15 @@ public class ImageClassificationUIController {
 	        	switch ((int) newIndex) {
 	        		case 0:
 	        			extractor = new MeanColor();
+	        			break;
+	        		case 1:
+	        			extractor = new ColorHistogram(2);
+	        			break;
+	        		case 2:
+	        			extractor = new ColorHistogram(4);
+	        			break;
+	        		case 3:
+	        			extractor = new ColorHistogram(8);
 	        			break;
 	        	}
 			}
