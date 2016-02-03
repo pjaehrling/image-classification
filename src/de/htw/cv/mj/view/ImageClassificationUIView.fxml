@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.control.ComboBox?>
 
-<BorderPane prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.htw.cv.mj.controller.ImageClassificationUIController">
+<BorderPane prefHeight="700.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="de.htw.cv.mj.controller.ImageClassificationUIController">
    
    <top>
    
@@ -50,7 +50,7 @@
           <Button fx:id="trainButton" prefWidth="100.0" text="Train" GridPane.columnIndex="4" />
           <Button fx:id="calculateButton" prefWidth="100.0" text="Calculate" GridPane.columnIndex="4" GridPane.rowIndex="1" />
           <Button fx:id="accuracyMeasurementButton" prefWidth="100.0" text="Measure Accuracy" GridPane.columnIndex="4" GridPane.rowIndex="2" />
-            <Separator prefWidth="200.0" GridPane.columnSpan="4" GridPane.rowIndex="2" />
+          <Separator prefWidth="200.0" GridPane.columnSpan="4" GridPane.rowIndex="2" />
           
         </children>
       </GridPane>
@@ -64,15 +64,21 @@
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="256.0" minWidth="256.0" />
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="2.0" minWidth="2.0" />
-          <ColumnConstraints hgrow="SOMETIMES"/>
+          <ColumnConstraints hgrow="SOMETIMES" />
         </columnConstraints>
         <rowConstraints>
           <RowConstraints maxHeight="30.0" valignment="TOP" vgrow="SOMETIMES" />
           <RowConstraints valignment="TOP" vgrow="SOMETIMES" />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
+            <RowConstraints />
         </rowConstraints>
       
         <children>
-            
+          <!-- Top -->  
             <!-- Left side - Test Image -->  
             <HBox prefHeight="100.0" prefWidth="200.0">
                <children>
@@ -98,24 +104,31 @@
             		<!-- Will be added on runtime (ImageView's) -->
             	</children>
             </GridPane>
+          <!-- end Top -->  
          	
-         	<HBox GridPane.columnIndex="0" GridPane.rowIndex="3">
+          <Separator prefWidth="200.0" GridPane.columnSpan="3" GridPane.rowIndex="3" />
+         	
+          <!-- Bottom -->
+          	<Label text="Confusion Matrix" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+          	<ImageView fx:id="accuracyImageView" preserveRatio="true" smooth="false" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+         	
+         	<HBox GridPane.columnIndex="2" GridPane.rowIndex="4">
                <children>
-	         	<Label text="Average Rank: "/>
-	         	<Label fx:id="averageRankLabel"><font><Font name="System Bold" size="13.0" /></font></Label>
+               	 <Label text="Average Rank: "/>
+	         	 <Label fx:id="averageRankLabel"><font><Font name="System Bold" size="13.0" /></font></Label> 
                </children>
          	 </HBox>
          	 
-          	<HBox GridPane.columnIndex="0" GridPane.rowIndex="4">
+          	<HBox GridPane.columnIndex="2" GridPane.rowIndex="5">
                <children>
-	         	<Label text="Overall Correct Rate: "/>
-	         	<Label fx:id="overallCorrectLabel"><font><Font name="System Bold" size="13.0" /></font></Label>
+                 <Label text="Overall Correct Rate: "/>
+	         	 <Label fx:id="overallCorrectLabel"><font><Font name="System Bold" size="13.0" /></font></Label>
                </children>
          	 </HBox>
-            
-            <Label text="Confusion Matrix" GridPane.columnIndex="0" GridPane.rowIndex="5" />
-         	<ImageView fx:id="accuracyImageView" preserveRatio="true" smooth="false" GridPane.columnIndex="0" GridPane.rowIndex="6" />
-         
+	         	
+          <!-- end Bottom -->
+          
+          <Separator prefWidth="200.0" GridPane.columnSpan="3" GridPane.rowIndex="6" />  
         </children>
       </GridPane>
      
