@@ -24,6 +24,7 @@ public class ColorHistogram implements FeatureExtractor  {
 		int redPos = 0;
 		int greenPos = 0;
 		int bluePos = 0;
+		double maxVal = 0;
 		
 		for (int i = x; i < width; i++) {
 			for (int j = y; j < height; j++) {
@@ -34,8 +35,12 @@ public class ColorHistogram implements FeatureExtractor  {
 				histogramPos = bluePos * buckets * buckets + greenPos * buckets + redPos;
 				
 				featureVector[histogramPos]++;
+				if (featureVector[histogramPos] > maxVal) {
+					maxVal = featureVector[histogramPos];
+				}
 			}
 		}
+		normalize(featureVector, maxVal);
 			
 		return featureVector;
 	}
@@ -43,6 +48,13 @@ public class ColorHistogram implements FeatureExtractor  {
 	private int handleBorderCase(int pos)
 	{
 		return pos >= buckets ? buckets - 1 : pos;
+	}
+	
+	private void normalize(double[] hist, double max) {
+		double scale = 1.0 / max;
+		for (int i = 0; i < hist.length; i++) {
+			hist[i] = hist[i] * scale;
+		}
 	}
 	
 }
