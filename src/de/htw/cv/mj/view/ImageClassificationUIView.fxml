@@ -114,7 +114,7 @@
          	
          	<HBox GridPane.columnIndex="2" GridPane.rowIndex="4">
                <children>
-               	 <Label text="Average Rank: "/>
+               	 <Label text="Overall Mean Rank: "/>
 	         	 <Label fx:id="averageRankLabel"><font><Font name="System Bold" size="13.0" /></font></Label> 
                </children>
          	 </HBox>

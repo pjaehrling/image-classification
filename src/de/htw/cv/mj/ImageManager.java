@@ -3,14 +3,11 @@ package de.htw.cv.mj;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import javafx.scene.image.Image;
 import de.htw.cv.mj.featureextractor.FeatureExtractor;
 import de.htw.cv.mj.model.Pic;
-import de.htw.cv.mj.model.Category;
 
 /**
  * @author Marie Manderla, Philipp Jährling
@@ -20,7 +17,7 @@ public class ImageManager {
 	private static final String[] EXTENSIONS = new String[]{"jpg", "png"};
 	
 	private HashMap<String, List<Pic>> imageCache; // images (directory path is the key)
-	private HashMap<String, Set<Category>> categoryCache;
+	private HashMap<String, List<String>> categoryCache;
 	private HashMap<String, String> testImageNames;
 	private String currentPath;
 	
@@ -29,7 +26,7 @@ public class ImageManager {
 	 */
 	public ImageManager() {
 		imageCache = new HashMap<String, List<Pic>>();
-		categoryCache = new HashMap<String, Set<Category>>();
+		categoryCache = new HashMap<String, List<String>>();
 		testImageNames = new HashMap<String, String>();
 	}
 	
@@ -90,23 +87,8 @@ public class ImageManager {
 	 * 
 	 * @return
 	 */
-	public Set<Category> getCategories() {
-		return categoryCache.get(currentPath);
-	}
-	
-	/**
-	 * 
-	 * @return
-	 */
 	public List<String> getCategoryNames() {
-		Set<Category> categories = this.getCategories();
-		List<String> categoryNames = new ArrayList<String>();
-		
-		for (Category cat : categories) {
-			categoryNames.add(cat.getName());
-		}
-		
-		return categoryNames;
+		return categoryCache.get(currentPath);
 	}
 
 	/**
@@ -162,18 +144,16 @@ public class ImageManager {
 		
 		// load images files and add them to an image list that is stored for a path
 		List<Pic> imageList = new ArrayList<Pic>();
+		List<String> categoryList = new ArrayList<String>();
 		for (File imageFile : imageFiles) {
-			imageList.add(loadImage(imageFile));
+			Pic pic = loadImage(imageFile);
+			imageList.add(pic);
+			if (!categoryList.contains(pic.getCategoryName())) {
+				categoryList.add(pic.getCategoryName());
+			}
 		}
 		imageCache.put(currentPath, imageList);
-		
-
-		// create categories and add them to a category set that is stored for a path
-		Set<Category> categorySet = new HashSet<Category>();
-		for (File imageFile : imageFiles) {
-			categorySet.add(loadCategory(imageFile));
-		}
-		categoryCache.put(currentPath, categorySet);
+		categoryCache.put(currentPath, categoryList);
 	}
 	
 	/**
@@ -219,12 +199,6 @@ public class ImageManager {
 	/* ***************************************************************************************************
 	 * Private Methods
 	 * ***************************************************************************************************/
-	
-	private Category loadCategory(File imageFile) {
-		String category = getCategory(imageFile);
-		
-		return new Category(category);
-	}
 	
 	/**
 	 * Load an image and return a "Pic" object as it's representation

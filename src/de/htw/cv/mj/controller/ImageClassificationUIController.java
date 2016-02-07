@@ -9,6 +9,7 @@ import de.htw.cv.mj.accuracy.MeanRank;
 import de.htw.cv.mj.accuracy.CorrectRate;
 import de.htw.cv.mj.classificator.Classifier;
 import de.htw.cv.mj.classificator.EuclideanOneVsAll;
+import de.htw.cv.mj.classificator.EuclideanLinearQuantified;
 import de.htw.cv.mj.classificator.KNearestNeighbors;
 import de.htw.cv.mj.featureextractor.ColorHistogram;
 import de.htw.cv.mj.featureextractor.FeatureExtractor;
@@ -37,7 +38,7 @@ public class ImageClassificationUIController {
 	private String[] imageSetChoices = new String[]{"Easy (250 Images)", "Hard (720 Images)"};
 	private String[] imageSetPathes = new String[]{"images/easy", "images/hard"};
 	private String[] featureTypeChoices = new String[]{"Mean Color", "ColorHistogram (2)", "ColorHistogram (4)", "ColorHistogram (8)"};
-	private String[] classMeasureChoices = new String[]{"Eucledian (1vsAll)", "K-Nearest Neighbor (1)", "K-Nearest Neighbor (3)", "K-Nearest Neighbor (5)"};
+	private String[] classMeasureChoices = new String[]{"Eucledian (1vsAll)", "Eucledian (Linear Quantified)", "3-Nearest Neighbors (1vsAll)", "5-Nearest Neighbors (1vsAll)"};
 	
 	private String defaultImagePath = "images/default.jpg";
 	private Image defaultImage;
@@ -258,10 +259,10 @@ public class ImageClassificationUIController {
 				//setTrained(false);
 				switch ((int) newIndex) {
 		    		case 0:
-		    			classifier = new EuclideanOneVsAll();    			
+		    			classifier = new EuclideanOneVsAll();
 		    			break;
 		    		case 1:
-		    			classifier = new KNearestNeighbors(1);
+		    			classifier = new EuclideanLinearQuantified();
 		    			break;
 		    		case 2:
 		    			classifier = new KNearestNeighbors(3);
