@@ -1,6 +1,10 @@
 package de.htw.cv.mj.classificator;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import de.htw.cv.mj.ImageManager;
 import de.htw.cv.mj.distance.EucledianDistance;
@@ -33,8 +37,22 @@ public class EuclideanLinearQuantified implements Classifier {
 	
 	@Override
 	public int classifyRank(Pic image, ImageManager imageManager) {
-		// TODO
-		return 0;
+		List<Pic> trainedImages = imageManager.getImages();
+		List<String> categories = imageManager.getCategoryNames();
+		
+		double[][] categoryFeatures = quantifyClassFeature(trainedImages, categories, image);
+		List<Result> distancesList = new ArrayList<Result>();
+		double distance = 0;
+		
+		
+		for (int ci = 0; ci < categories.size(); ci++) {
+			distance = EucledianDistance.calculate(image.getFeatures(), categoryFeatures[ci]);
+			distancesList.add(new Result(categories.get(ci), distance));
+		}	
+		Collections.sort(distancesList);
+		
+		int rank = distancesList.indexOf(new Result(image.getCategoryName(), 0.0));
+		return rank + 1;
 	}
 	
 	/**
