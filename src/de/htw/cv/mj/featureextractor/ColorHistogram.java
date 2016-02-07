@@ -18,6 +18,7 @@ public class ColorHistogram implements FeatureExtractor  {
 		int bucketSize = 256 / buckets;
 
 		double[] featureVector = new double[buckets * buckets * buckets];
+		// double normUnit = 1.0 / pixels.length;
 
 		int pos = 0;
 		int histogramPos = 0;
@@ -35,6 +36,8 @@ public class ColorHistogram implements FeatureExtractor  {
 				histogramPos = bluePos * buckets * buckets + greenPos * buckets + redPos;
 				
 				featureVector[histogramPos]++;
+				//featureVector[histogramPos] += normUnit;
+				
 				if (featureVector[histogramPos] > maxVal) {
 					maxVal = featureVector[histogramPos];
 				}
