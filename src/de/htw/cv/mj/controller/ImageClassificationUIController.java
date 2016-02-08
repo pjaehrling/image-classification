@@ -3,6 +3,8 @@ package de.htw.cv.mj.controller;
 import java.io.File;
 import java.util.List;
 
+
+
 import de.htw.cv.mj.ImageManager;
 import de.htw.cv.mj.accuracy.ConfusionMatrix;
 import de.htw.cv.mj.accuracy.MeanRank;
@@ -13,7 +15,9 @@ import de.htw.cv.mj.classificator.EuclideanLinearQuantified;
 import de.htw.cv.mj.classificator.KNearestNeighbors;
 import de.htw.cv.mj.featureextractor.ColorHistogram;
 import de.htw.cv.mj.featureextractor.FeatureExtractor;
+import de.htw.cv.mj.featureextractor.HarrisMeanColor;
 import de.htw.cv.mj.featureextractor.MeanColor;
+import de.htw.cv.mj.helper.HarrisCornerDetector;
 import de.htw.cv.mj.model.Pic;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -37,7 +41,7 @@ public class ImageClassificationUIController {
 	
 	private String[] imageSetChoices = new String[]{"Easy (250 Images)", "Hard (720 Images)"};
 	private String[] imageSetPathes = new String[]{"images/easy", "images/hard"};
-	private String[] featureTypeChoices = new String[]{"Mean Color", "ColorHistogram (2)", "ColorHistogram (4)", "ColorHistogram (8)"};
+	private String[] featureTypeChoices = new String[]{"Mean Color", "ColorHistogram (2)", "ColorHistogram (4)", "ColorHistogram (8)", "Harris ..."};
 	private String[] classMeasureChoices = new String[]{"Eucledian (1vsAll)", "Eucledian (Linear Quantified)", "3-Nearest Neighbors (1vsAll)", "5-Nearest Neighbors (1vsAll)"};
 	
 	private String defaultImagePath = "images/default.jpg";
@@ -239,6 +243,9 @@ public class ImageClassificationUIController {
 	        			break;
 	        		case 3:
 	        			extractor = new ColorHistogram(8);
+	        			break;
+	        		case 4:
+	        			extractor = new HarrisMeanColor(3, testImageView);
 	        			break;
 	        	}
 			}

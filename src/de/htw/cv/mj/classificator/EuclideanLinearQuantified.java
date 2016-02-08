@@ -2,9 +2,7 @@ package de.htw.cv.mj.classificator;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import de.htw.cv.mj.ImageManager;
 import de.htw.cv.mj.distance.EucledianDistance;

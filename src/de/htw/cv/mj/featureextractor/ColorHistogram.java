@@ -13,7 +13,7 @@ public class ColorHistogram implements FeatureExtractor  {
 	}
 
 	@Override
-	public double[] extract(int[] pixels, int x, int y, int width, int height, int image_width) {
+	public double[] extract(int[] pixels, int width, int height) {
 		
 		int bucketSize = 256 / buckets;
 
@@ -27,9 +27,9 @@ public class ColorHistogram implements FeatureExtractor  {
 		int bluePos = 0;
 		double maxVal = 0;
 		
-		for (int i = x; i < width; i++) {
-			for (int j = y; j < height; j++) {
-				pos = j * image_width + i;
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
+				pos = j * width + i;
 				redPos = handleBorderCase(((pixels[pos] >> 16) & 255) / bucketSize);
 				greenPos = handleBorderCase(((pixels[pos] >> 8) & 255) / bucketSize);
 				bluePos = handleBorderCase(((pixels[pos]) & 255) / bucketSize);

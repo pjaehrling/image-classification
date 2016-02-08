@@ -7,6 +7,7 @@ import java.util.List;
 
 import javafx.scene.image.Image;
 import de.htw.cv.mj.featureextractor.FeatureExtractor;
+import de.htw.cv.mj.featureextractor.HarrisMeanColor;
 import de.htw.cv.mj.model.Pic;
 
 /**
@@ -165,10 +166,18 @@ public class ImageManager {
 	public void trainImages(FeatureExtractor extractor) {
 		// Training images
 		List<Pic> pics = imageCache.get(currentPath);
-		for (Pic pic : pics) {
-			double [] features = extractor.extract(pic.getPixels(), 0, 0, pic.getWidth(), pic.getHeight(), pic.getWidth());
-			pic.setFeatures(features);
+		
+		// TODO Remove special Harris way again
+		if (extractor.getClass().equals(HarrisMeanColor.class)) {
+			extractor.extract(pics.get(0).getPixels(), pics.get(0).getWidth(), pics.get(0).getHeight());
+		} else {
+			for (Pic pic : pics) {
+				double [] features = extractor.extract(pic.getPixels(), pic.getWidth(), pic.getHeight());
+				pic.setFeatures(features);
+			}
 		}
+		
+
 	}
 	
 	/**
