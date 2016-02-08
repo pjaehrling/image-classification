@@ -1,41 +1,55 @@
 package de.htw.cv.mj.featureextractor;
 
-import javafx.scene.image.ImageView;
-import javafx.scene.image.PixelFormat;
-import javafx.scene.image.PixelWriter;
-import javafx.scene.image.WritableImage;
+import java.awt.Point;
+import java.util.List;
+
 import de.htw.cv.mj.helper.HarrisCornerDetector;
 
+/**
+ * @author Marie Manderla, Philipp Jährling
+ */
 public class HarrisMeanColor implements FeatureExtractor {
-	private int windowSize;
-	private ImageView imageView;
+
+	private static final int WINDOW_SIZE = 3;
 	
-	public HarrisMeanColor (int windowSize, ImageView imageView) {
-		this.setWindowSize(windowSize);
-		this.imageView = imageView;
-	}
-
-	public void setWindowSize(int windowSize) {
-		this.windowSize = windowSize;
-	}
-
 	@Override
 	public double[] extract(int[] pixels, int width, int height) {
-		double[] hcr = HarrisCornerDetector.detect(pixels, width, height);
+		// get interest points using Harris Corner Detector
+		List<Point> interestPoints = HarrisCornerDetector.detect(pixels, width, height);
+		
+		int r = 0;
+		int g = 0;
+		int b = 0;
+		int sum = 0;
+		int val = 0;
+		
+		int windowGap = WINDOW_SIZE / 2;
+		int windowPosX = 0;
+		int windowPosY = 0;
 
-		int[] hcrImage = new int[hcr.length];
-		for (int i = 0; i < hcr.length; i++) {
-			int val = Math.max( Math.min((int)hcr[i], 255), 0) ;
-			hcrImage[i] = (0xFF000000 | (val << 16) | (val << 8) | val);
+		for (Point p : interestPoints) {
+			
+			// Get Window around point
+			for (int y = 0; y < WINDOW_SIZE; y++) {
+				windowPosY = Math.max( Math.min(p.y + (y - windowGap), (height - 1)) , 0);
+			
+				for (int x = 0; x < WINDOW_SIZE; x++) {
+					windowPosX = Math.max( Math.min(p.x + (x - windowGap), (width - 1)) , 0);
+					
+					val = pixels[(windowPosY * width) + windowPosX];
+					r += (val >> 16) & 0xFF;
+					g += (val >> 8 ) & 0xFF;
+					b += (val      ) & 0xFF;
+					sum++;
+				}
+			}
+			
 		}
 		
-		WritableImage wr = new WritableImage(width, height);
-		PixelWriter pw = wr.getPixelWriter();
-		pw.setPixels(0, 0, width, height, PixelFormat.getIntArgbInstance(), hcrImage, 0, width);
-		
-		imageView.setImage(wr);
-		
-		double[] featureVector = new double[0];
+		double[] featureVector = new double[3];
+		featureVector[0] = r / sum;
+		featureVector[1] = g / sum;
+		featureVector[2] = b / sum;
 			
 		return featureVector;
 	}

@@ -1,5 +1,8 @@
 package de.htw.cv.mj.helper;
 
+/**
+ * @author Marie Manderla, Philipp Jährling
+ */
 public class ImageTransformations {
 	
 	/***************************************************************************

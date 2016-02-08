@@ -167,17 +167,10 @@ public class ImageManager {
 		// Training images
 		List<Pic> pics = imageCache.get(currentPath);
 		
-		// TODO Remove special Harris way again
-		if (extractor.getClass().equals(HarrisMeanColor.class)) {
-			extractor.extract(pics.get(0).getPixels(), pics.get(0).getWidth(), pics.get(0).getHeight());
-		} else {
-			for (Pic pic : pics) {
-				double [] features = extractor.extract(pic.getPixels(), pic.getWidth(), pic.getHeight());
-				pic.setFeatures(features);
-			}
+		for (Pic pic : pics) {
+			double [] features = extractor.extract(pic.getPixels(), pic.getWidth(), pic.getHeight());
+			pic.setFeatures(features);
 		}
-		
-
 	}
 	
 	/**

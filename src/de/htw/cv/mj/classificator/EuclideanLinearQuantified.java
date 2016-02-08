@@ -75,9 +75,12 @@ public class EuclideanLinearQuantified implements Classifier {
 		
 		// Add up all features per category
 		for (Pic trainedImage : trainedImages) {
-			if (doNotIncludeImage.getName().equals(trainedImage.getName())) {
-				continue; // reject the image which should be classified
-			}
+			/*
+			 * Laut Folien (Übung 6): "das getestete Bild darf ... in Clustering aufgegangen sein"
+			 */
+//			if (doNotIncludeImage.getName().equals(trainedImage.getName())) {
+//				continue; // reject the image which should be classified
+//			}
 			
 			imageFeatures = trainedImage.getFeatures();
 			categoryIndex = categories.indexOf(trainedImage.getCategoryName());

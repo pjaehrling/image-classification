@@ -18,6 +18,8 @@ public class ColorHistogram implements FeatureExtractor  {
 		int bucketSize = 256 / buckets;
 
 		double[] featureVector = new double[buckets * buckets * buckets];
+		
+		// NORMALIZE -> pixel count
 		// double normUnit = 1.0 / pixels.length;
 
 		int pos = 0;
@@ -25,7 +27,6 @@ public class ColorHistogram implements FeatureExtractor  {
 		int redPos = 0;
 		int greenPos = 0;
 		int bluePos = 0;
-		double maxVal = 0;
 		
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
@@ -35,15 +36,19 @@ public class ColorHistogram implements FeatureExtractor  {
 				bluePos = handleBorderCase(((pixels[pos]) & 255) / bucketSize);
 				histogramPos = bluePos * buckets * buckets + greenPos * buckets + redPos;
 				
+				// just add pixel to bin
 				featureVector[histogramPos]++;
-				//featureVector[histogramPos] += normUnit;
 				
-				if (featureVector[histogramPos] > maxVal) {
-					maxVal = featureVector[histogramPos];
-				}
+				// NORMALIZE -> pixel count
+				// featureVector[histogramPos] += normUnit;
 			}
 		}
-		normalize(featureVector, maxVal);
+		
+		// NORMALIZE -> max
+		normalizeMax(featureVector);
+		
+		// NORMALIZE -> min/max
+		// normalizeMinMax(featureVector);
 			
 		return featureVector;
 	}
@@ -53,10 +58,47 @@ public class ColorHistogram implements FeatureExtractor  {
 		return pos >= buckets ? buckets - 1 : pos;
 	}
 	
-	private void normalize(double[] hist, double max) {
-		double scale = 1.0 / max;
+	/**
+	 * Normalize with bin-max value
+	 * @param hist
+	 */
+	private void normalizeMax(double[] hist) {
+		double maxVal = 0;
+		
+		// Get Max
 		for (int i = 0; i < hist.length; i++) {
-			hist[i] = hist[i] * scale;
+			if (hist[i] > maxVal) {
+				maxVal = hist[i];
+			}
+		}
+		
+		// Calc
+		for (int i = 0; i < hist.length; i++) {
+			hist[i] = hist[i] / maxVal;
+		}
+	}
+	
+	/**
+	 * Normalize with min and max value
+	 * @param hist
+	 */
+	private void normalizeMinMax(double[] hist) {
+		double maxVal = 0;
+		double minValue = Double.MAX_VALUE;
+		
+		// Get Min/Max
+		for (int i = 0; i < hist.length; i++) {
+			if (hist[i] > maxVal) {
+				maxVal = hist[i];
+			}
+			if (hist[i] < minValue) {
+				minValue = hist[i];
+			}
+		}
+		
+		// Calc
+		for (int i = 0; i < hist.length; i++) {
+			hist[i] = (hist[i] - minValue) / (maxVal - minValue);
 		}
 	}
 	
