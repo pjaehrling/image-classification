@@ -1,13 +1,24 @@
 package de.htw.cv.mj.featureextractor;
 
+/**
+ * @author Marie Manderla, Philipp Jährling
+ */
 public class ColorHistogram implements FeatureExtractor  {
 
 	private int buckets;
 	
+	/**
+	 * 
+	 * @param buckets
+	 */
 	public ColorHistogram(int buckets) {
 		this.buckets = buckets;
 	}
 
+	/**
+	 * 
+	 * @param buckets
+	 */
 	public void setBuckets(int buckets) {
 		this.buckets = buckets;
 	}
@@ -53,8 +64,12 @@ public class ColorHistogram implements FeatureExtractor  {
 		return featureVector;
 	}
 
-	private int handleBorderCase(int pos)
-	{
+	/**
+	 * 
+	 * @param pos
+	 * @return
+	 */
+	private int handleBorderCase(int pos) {
 		return pos >= buckets ? buckets - 1 : pos;
 	}
 	

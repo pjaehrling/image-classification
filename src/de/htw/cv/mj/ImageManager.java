@@ -7,7 +7,6 @@ import java.util.List;
 
 import javafx.scene.image.Image;
 import de.htw.cv.mj.featureextractor.FeatureExtractor;
-import de.htw.cv.mj.featureextractor.HarrisMeanColor;
 import de.htw.cv.mj.model.Pic;
 
 /**
