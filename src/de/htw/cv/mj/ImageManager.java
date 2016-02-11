@@ -35,23 +35,7 @@ public class ImageManager {
 	 * ***************************************************************************************************/
 	
 	/**
-	 * 
-	 * @param imageName
-	 * @param imagePath
-	 * @return
-	 */
-	public void removeImage(String imageName) {
-		List<Pic> pics = imageCache.get(currentPath);
-		
-		for (Pic pic : pics) {
-			if (pic.getName().equals(imageName)) {
-				pics.remove(pic);
-				return;
-			}  
-		}
-	}
-	
-	/**
+	 * Get a List of all images for the given path (image set)
 	 * 
 	 * @param imagePath
 	 * @return
@@ -61,6 +45,7 @@ public class ImageManager {
 	}
 	
 	/**
+	 * Get a List of all images in the current image set
 	 * 
 	 * @return
 	 */
@@ -69,6 +54,7 @@ public class ImageManager {
 	}
 	
 	/**
+	 * Get a List of images for the given category and the current image set
 	 * 
 	 * @return
 	 */
@@ -84,6 +70,7 @@ public class ImageManager {
 	}
 	
 	/**
+	 * Get a list of all category names for the current image set
 	 * 
 	 * @return
 	 */
@@ -92,6 +79,7 @@ public class ImageManager {
 	}
 
 	/**
+	 * Get a List of image names for the current image set
 	 * 
 	 * @return
 	 */
@@ -106,6 +94,7 @@ public class ImageManager {
 	}
 	
 	/**
+	 * Get an Image (as instance of "Pic" class) by name for the current image set
 	 * 
 	 * @param imagePath
 	 * @return

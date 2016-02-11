@@ -27,6 +27,8 @@
           <RowConstraints vgrow="SOMETIMES" />
           <RowConstraints vgrow="SOMETIMES" />
           <RowConstraints vgrow="SOMETIMES" />
+          <RowConstraints vgrow="SOMETIMES" />
+          <RowConstraints vgrow="SOMETIMES" />
         </rowConstraints>
         
         <children>
@@ -50,8 +52,20 @@
           <Button fx:id="trainButton" prefWidth="100.0" text="Train" GridPane.columnIndex="4" />
           <Button fx:id="calculateButton" prefWidth="100.0" text="Calculate" GridPane.columnIndex="4" GridPane.rowIndex="1" />
           <Button fx:id="accuracyMeasurementButton" prefWidth="100.0" text="Measure Accuracy" GridPane.columnIndex="4" GridPane.rowIndex="2" />
-          <Separator prefWidth="200.0" GridPane.columnSpan="4" GridPane.rowIndex="2" />
           
+          <Label text="IP - Window Size (x*x)" GridPane.rowIndex="2" />
+          <ComboBox fx:id="ipWindowSizeComboBox" prefWidth="160.0" GridPane.rowIndex="3" />
+          
+          <Label text="Color Histogram Bins (x³)" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+          <ComboBox fx:id="colorHistoBinsComboBox" prefWidth="160.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+          
+          <Label text="Gradient Histogram Bins" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+          <ComboBox fx:id="gradientHistoBinsComboBox" prefWidth="160.0" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+          
+          <CheckBox fx:id="minMaxNormCheckBox" mnemonicParsing="false" text="Min/Max Norm. (Hist)" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+          
+          <Separator prefWidth="200.0" GridPane.columnSpan="4" GridPane.rowIndex="4" />
+
         </children>
       </GridPane>
       
@@ -109,19 +123,19 @@
           <Separator prefWidth="200.0" GridPane.columnSpan="3" GridPane.rowIndex="3" />
          	
           <!-- Bottom -->
-          	<Label text="Confusion Matrix" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+          	<Label text="Confusion Matrix" GridPane.columnIndex="0" GridPane.rowIndex="4" />
           	<ImageView fx:id="accuracyImageView" preserveRatio="true" smooth="false" GridPane.columnIndex="0" GridPane.rowIndex="5" />
          	
          	<HBox GridPane.columnIndex="2" GridPane.rowIndex="4">
                <children>
-               	 <Label text="Overall Mean Rank: "/>
+               	 <Label text="Overall Mean Rank: " />
 	         	 <Label fx:id="averageRankLabel"><font><Font name="System Bold" size="13.0" /></font></Label> 
                </children>
          	 </HBox>
          	 
           	<HBox GridPane.columnIndex="2" GridPane.rowIndex="5">
                <children>
-                 <Label text="Overall Correct Rate: "/>
+                 <Label text="Overall Correct Rate: " />
 	         	 <Label fx:id="overallCorrectLabel"><font><Font name="System Bold" size="13.0" /></font></Label>
                </children>
          	 </HBox>

@@ -13,8 +13,10 @@ import de.htw.cv.mj.classificator.EuclideanLinearQuantified;
 import de.htw.cv.mj.classificator.KNearestNeighbors;
 import de.htw.cv.mj.featureextractor.ColorHistogram;
 import de.htw.cv.mj.featureextractor.FeatureExtractor;
+import de.htw.cv.mj.featureextractor.HarrisGradientHistogram;
 import de.htw.cv.mj.featureextractor.HarrisMeanColor;
 import de.htw.cv.mj.featureextractor.HarrisColorHistogram;
+import de.htw.cv.mj.featureextractor.HarrisColorGradientHistogram;
 import de.htw.cv.mj.featureextractor.MeanColor;
 import de.htw.cv.mj.model.Pic;
 import javafx.collections.FXCollections;
@@ -22,6 +24,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -39,11 +42,16 @@ public class ImageClassificationUIController {
 	
 	private String[] imageSetChoices = new String[]{"Easy (250 Images)", "Hard (720 Images)"};
 	private String[] imageSetPathes = new String[]{"images/easy", "images/hard"};
-	private String[] featureTypeChoices = new String[]{
-			"Mean Color (All)", "Color Histogram 2³ (All)", "Color Histogram 4³ (All)", "ColorHistogram 8³ (All)", 
-			"Mean Color (IP)", "Color Histogram 2³ (IP)", "Color Histogram 4³ (IP)", "ColorHistogram 8³ (IP)"
-			};
 	private String[] classMeasureChoices = new String[]{"Eucledian (1vsAll)", "Eucledian (Linear Quantified)", "3-Nearest Neighbors (1vsAll)", "5-Nearest Neighbors (1vsAll)"};
+	private String[] featureTypeChoices = new String[]{
+				"Mean Color (All)", "Color Histogram (All)", 
+				"Mean Color (IP)", "Color Histogram (IP)",
+				"Gradient Histogram (IP)", "Color + Gradient Histogram (IP)"
+			};
+	
+	private Integer[] ipWindowSizeChoices = new Integer[]{1, 3, 5, 7};
+	private Integer[] gradientHistogramBinChoices = new Integer[]{6, 12, 36, 72, 120, 180};
+	private Integer[] colorHistogramBinChoices = new Integer[]{2, 4, 8, 16};
 	
 	private String defaultImagePath = "images/default.jpg";
 	private Image defaultImage;
@@ -61,6 +69,15 @@ public class ImageClassificationUIController {
 	ComboBox<String> featureTypeComboBox;
 	@FXML
 	ComboBox<String> classMeasureComboBox;
+	@FXML
+	ComboBox<Integer> ipWindowSizeComboBox;
+	@FXML
+	ComboBox<Integer> colorHistoBinsComboBox;
+	@FXML
+	ComboBox<Integer> gradientHistoBinsComboBox;
+	
+	@FXML
+	CheckBox minMaxNormCheckBox;
 	
 	@FXML
 	Button trainButton;
@@ -100,6 +117,11 @@ public class ImageClassificationUIController {
 		initFeatureTypeComboBox();
 		initClassMeasureComboBox();
 		
+		initIPWindowSizeComboBox();
+		initColorHistogramBinsComboBox();
+		initGradientHistogramBinsComboBox();
+		initMinMaxNormCheckBox();
+		
 		initTrainButton();
 		initCalculateButton();
 		initAccuracyMeasurementButton();
@@ -127,6 +149,7 @@ public class ImageClassificationUIController {
 	}
 	
 	/**
+	 * Set all inputs to match if the classifier is trained for the current settings
 	 * 
 	 * @param isTrained
 	 */
@@ -134,9 +157,16 @@ public class ImageClassificationUIController {
 		trainButton.setDisable(isTrained);
 		calculateButton.setDisable(!isTrained);
 		accuracyMeasurementButton.setDisable(!isTrained);
+		if (!isTrained) {
+			averageRankLabel.setText("");
+			overallCorrectLabel.setText("");
+			accuracyImageView.setImage(null);
+			clearCategoryImages();
+		}
 	}
 	
 	/**
+	 * Create an ImageView component for the category image grid
 	 * 
 	 * @param image
 	 * @return
@@ -152,6 +182,7 @@ public class ImageClassificationUIController {
 	}
 	
 	/**
+	 * Show all images the have the calculated category in an image grid
 	 * 
 	 * @param category
 	 */
@@ -170,11 +201,87 @@ public class ImageClassificationUIController {
 	}
 	
 	/**
-	 * 
+	 * Clear the images for the calculated class
 	 */
 	private void clearCategoryImages() {
 		categoryImageViews = new ImageView[0];
 		categoryImagesGrid.getChildren().remove(0, categoryImagesGrid.getChildren().size());
+	}
+	
+	/**
+	 * Set the current Feature Extractor object to fit the current settings
+	 */
+	private void setFeatureExtractor() {
+		setTrained(false);
+		
+		int colorBinCount = 0;
+		int ipWindowSize = 0;
+		int gradientBinCount = 0;
+		boolean useMinMaxNormalisation = false;
+		
+		int featureTypeIndex = featureTypeComboBox.getSelectionModel().selectedIndexProperty().get();
+
+    	switch (featureTypeIndex) {
+    		case 0: // --> Mean Color All
+    			extractor = new MeanColor();
+    			ipWindowSizeComboBox.setDisable(true);
+    			colorHistoBinsComboBox.setDisable(true);
+    			gradientHistoBinsComboBox.setDisable(true);
+    			minMaxNormCheckBox.setDisable(true);
+    			break;
+    		case 1: // --> Color Histogram All
+    			useMinMaxNormalisation = minMaxNormCheckBox.isSelected();
+    			colorBinCount = (int)(colorHistoBinsComboBox.getSelectionModel().selectedItemProperty().get());
+    			extractor = new ColorHistogram(colorBinCount, useMinMaxNormalisation);
+    			break;
+    		case 2: // --> Mean Color IP
+    			ipWindowSize = (int)(ipWindowSizeComboBox.getSelectionModel().selectedItemProperty().get());
+    			extractor = new HarrisMeanColor(ipWindowSize);
+    			break;
+    		case 3: // --> Color Histogram IP
+    			useMinMaxNormalisation = minMaxNormCheckBox.isSelected();
+    			ipWindowSize = (int)(ipWindowSizeComboBox.getSelectionModel().selectedItemProperty().get());
+    			colorBinCount = (int)(colorHistoBinsComboBox.getSelectionModel().selectedItemProperty().get());
+    			extractor = new HarrisColorHistogram(colorBinCount, ipWindowSize, useMinMaxNormalisation);
+    			break;
+    		case 4: // --> Gradient Histogram IP
+    			useMinMaxNormalisation = minMaxNormCheckBox.isSelected();
+    			ipWindowSize = (int)(ipWindowSizeComboBox.getSelectionModel().selectedItemProperty().get());
+    			gradientBinCount = (int)(gradientHistoBinsComboBox.getSelectionModel().selectedItemProperty().get());
+    			extractor = new HarrisGradientHistogram(gradientBinCount, ipWindowSize, useMinMaxNormalisation);
+    			break;
+    		case 5: // --> Color + Gradient Histogram IP
+    			useMinMaxNormalisation = minMaxNormCheckBox.isSelected();
+    			ipWindowSize = (int)(ipWindowSizeComboBox.getSelectionModel().selectedItemProperty().get());
+    			colorBinCount = (int)(colorHistoBinsComboBox.getSelectionModel().selectedItemProperty().get());
+    			gradientBinCount = (int)(gradientHistoBinsComboBox.getSelectionModel().selectedItemProperty().get());
+    			extractor = new HarrisColorGradientHistogram(colorBinCount, gradientBinCount, ipWindowSize, useMinMaxNormalisation);
+    			break;
+    	}
+	}
+	
+	/**
+	 * Set the confusion Matrix Image
+	 * @param matrix
+	 * @param categoryNames
+	 */
+	private void setConfusionMatrixImage(double[][] matrix, List<String> categoryNames) {
+		int size = categoryNames.size();
+		int[] pixels = new int[size*size];
+		
+		for (int i = 0; i < size; i++) {
+			for (int j = 0; j < size; j++) {
+				int saturation = (int)(255 * matrix[i][j]);
+				pixels[j * size + i] = (0xFF << 24) | (saturation << 16) | (saturation << 8) | saturation;
+			}
+		}
+		
+		WritableImage wr = new WritableImage(size, size);
+		PixelWriter pw = wr.getPixelWriter();
+		pw.setPixels(0, 0, size, size, PixelFormat.getIntArgbInstance(), pixels, 0, size);
+		
+		accuracyImageView.setImage(wr);
+		accuracyImageView.setFitWidth(size * 2);
 	}
 	
 	/* ***************************************************************************************************
@@ -204,7 +311,6 @@ public class ImageClassificationUIController {
 		// Add event listener
 		testImageComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
 			if (oldValue != newValue) {
-				//setTrained(false);
 				imageManager.setTestImageByName(newValue);
 				categoryLabel.setText("Not classified");
 				clearCategoryImages();
@@ -231,32 +337,44 @@ public class ImageClassificationUIController {
         // Add event listener
 		featureTypeComboBox.getSelectionModel().selectedIndexProperty().addListener((observable, oldIndex, newIndex) -> {
 			if (oldIndex != newIndex) {
-				setTrained(false);
+				setFeatureExtractor();
 	        	switch ((int) newIndex) {
-	        		case 0:
-	        			extractor = new MeanColor();
-	        			break;
-	        		case 1:
-	        			extractor = new ColorHistogram(2);
-	        			break;
-	        		case 2:
-	        			extractor = new ColorHistogram(4);
-	        			break;
-	        		case 3:
-	        			extractor = new ColorHistogram(8);
-	        			break;
-	        		case 4:
-	        			extractor = new HarrisMeanColor();
-	        			break;
-	        		case 5:
-	        			extractor = new HarrisColorHistogram(2);
-	        			break;
-	        		case 6:
-	        			extractor = new HarrisColorHistogram(4);
-	        			break;
-	        		case 7:
-	        			extractor = new HarrisColorHistogram(8);
-	        			break;
+		        	case 0: // --> Mean Color All
+		    			ipWindowSizeComboBox.setDisable(true);
+		    			colorHistoBinsComboBox.setDisable(true);
+		    			gradientHistoBinsComboBox.setDisable(true);
+		    			minMaxNormCheckBox.setDisable(true);
+		    			break;
+		    		case 1: // --> Color Histogram All
+		    			ipWindowSizeComboBox.setDisable(true);
+		    			colorHistoBinsComboBox.setDisable(false);
+		    			gradientHistoBinsComboBox.setDisable(true);
+		    			minMaxNormCheckBox.setDisable(false);
+		    			break;
+		    		case 2: // --> Mean Color IP
+		    			ipWindowSizeComboBox.setDisable(false);
+		    			colorHistoBinsComboBox.setDisable(true);
+		    			gradientHistoBinsComboBox.setDisable(true);
+		    			minMaxNormCheckBox.setDisable(true);
+		    			break;
+		    		case 3: // --> Color Histogram IP
+		    			ipWindowSizeComboBox.setDisable(false);
+		    			colorHistoBinsComboBox.setDisable(false);
+		    			gradientHistoBinsComboBox.setDisable(true);
+		    			minMaxNormCheckBox.setDisable(false);
+		    			break;
+		    		case 4: // --> Gradient Histogram IP
+		    			ipWindowSizeComboBox.setDisable(false);
+		    			colorHistoBinsComboBox.setDisable(true);
+		    			gradientHistoBinsComboBox.setDisable(false);
+		    			minMaxNormCheckBox.setDisable(false);
+		    			break;
+		    		case 5: // --> Color + Gradient Histogram IP
+		    			ipWindowSizeComboBox.setDisable(false);
+		    			colorHistoBinsComboBox.setDisable(false);
+		    			gradientHistoBinsComboBox.setDisable(false);
+		    			minMaxNormCheckBox.setDisable(false);
+		    			break;
 	        	}
 			}
         });
@@ -264,7 +382,7 @@ public class ImageClassificationUIController {
 	}
 	
 	/**
-	 * Measure Choice
+	 * Class Measure Choice
 	 */
 	private void initClassMeasureComboBox() {
 		ObservableList<String> featureTypeChoiceList = FXCollections.observableArrayList(classMeasureChoices);
@@ -273,7 +391,6 @@ public class ImageClassificationUIController {
         // Add event listener
 		classMeasureComboBox.getSelectionModel().selectedIndexProperty().addListener((observable, oldIndex, newIndex) -> {
 			if (oldIndex != newIndex) {
-				//setTrained(false);
 				switch ((int) newIndex) {
 		    		case 0:
 		    			classifier = new EuclideanOneVsAll();
@@ -291,6 +408,51 @@ public class ImageClassificationUIController {
 			}
         });
 		classMeasureComboBox.getSelectionModel().selectFirst();
+	}
+	
+	/**
+	 * Interest Point Window Size
+	 */
+	private void initIPWindowSizeComboBox() {
+		ObservableList<Integer> ipWindowSizeChoiceList = FXCollections.observableArrayList(ipWindowSizeChoices);
+		ipWindowSizeComboBox.setItems(ipWindowSizeChoiceList);
+		ipWindowSizeComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue != oldValue) setFeatureExtractor();
+        });
+		ipWindowSizeComboBox.getSelectionModel().selectFirst();
+	}
+	
+	/**
+	 * Color Histogram Bin Count
+	 */
+	private void initColorHistogramBinsComboBox() {
+		ObservableList<Integer> choiceList = FXCollections.observableArrayList(colorHistogramBinChoices);
+		colorHistoBinsComboBox.setItems(choiceList);
+		colorHistoBinsComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue != oldValue) setFeatureExtractor();
+        });
+		colorHistoBinsComboBox.getSelectionModel().selectFirst();
+	}
+	
+	/**
+	 * Gradient Histogram Bin Count
+	 */
+	private void initGradientHistogramBinsComboBox() {
+		ObservableList<Integer> choiceList = FXCollections.observableArrayList(gradientHistogramBinChoices);
+		gradientHistoBinsComboBox.setItems(choiceList);
+		gradientHistoBinsComboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue != oldValue) setFeatureExtractor();
+        });
+		gradientHistoBinsComboBox.getSelectionModel().selectFirst();
+	}
+	
+	/**
+	 * Min/Max Normalisation Checkbox
+	 */
+	private void initMinMaxNormCheckBox() {
+		minMaxNormCheckBox.selectedProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue != oldValue) setFeatureExtractor();
+	    });
 	}
 	
 	/**
@@ -342,25 +504,6 @@ public class ImageClassificationUIController {
 		    	setConfusionMatrixImage(matrix, categoryNames);
 		    }
 		});
-	}
-	
-	private void setConfusionMatrixImage(double[][] matrix, List<String> categoryNames) {
-		int size = categoryNames.size();
-		int[] pixels = new int[size*size];
-		
-		for (int i = 0; i < size; i++) {
-			for (int j = 0; j < size; j++) {
-				int saturation = (int)(255 * matrix[i][j]);
-				pixels[j * size + i] = (0xFF << 24) | (saturation << 16) | (saturation << 8) | saturation;
-			}
-		}
-		
-		WritableImage wr = new WritableImage(size, size);
-		PixelWriter pw = wr.getPixelWriter();
-		pw.setPixels(0, 0, size, size, PixelFormat.getIntArgbInstance(), pixels, 0, size);
-		
-		accuracyImageView.setImage(wr);
-		accuracyImageView.setFitWidth(0);
 	}
 
 }

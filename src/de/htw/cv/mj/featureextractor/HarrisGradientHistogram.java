@@ -9,17 +9,17 @@ import de.htw.cv.mj.helper.ImageTransformations;
 /**
  * @author Marie Manderla, Philipp Jährling
  */
-public class HarrisColorHistogram implements FeatureExtractor  {
-
-	private int windowSize;
+public class HarrisGradientHistogram implements FeatureExtractor  {
+	
 	private int buckets;
+	private int windowSize;
 	private boolean useMinMaxNormalisation;
 	
-	public HarrisColorHistogram(int buckets, int windowSize, boolean useMinMaxNormalisation) {
+	public HarrisGradientHistogram(int buckets, int windowSize, boolean useMinMaxNormalisation) {
 		this.buckets = buckets;
 		this.windowSize = windowSize;
 		this.useMinMaxNormalisation = useMinMaxNormalisation;
-		System.out.println("HarrisColorHistogram: " + buckets + " / " + windowSize + " / " + useMinMaxNormalisation);
+		System.out.println("HarrisGradientHistogram: " + buckets + " / " + windowSize + " / " + useMinMaxNormalisation);
 	}
 
 	@Override
@@ -30,9 +30,13 @@ public class HarrisColorHistogram implements FeatureExtractor  {
 		// get interest points using Harris Corner Detector
 		List<Point> interestPoints = HarrisCornerDetector.detect(grayPixel, width, height);
 		
+		// Gradient
+		int[] xGradient = ImageTransformations.calcXGradient(grayPixel, width, height);
+		int[] yGradient = ImageTransformations.calcYGradient(grayPixel, width, height); 
+		
 		// prepare histogram
-		int bucketSize = 256 / buckets;
-		double[] featureVector = new double[buckets * buckets * buckets];
+		int bucketSize = 360 / buckets;
+		double[] featureVector = new double[buckets];
 		
 		// normalize by interest point count
 		double normUnit = 1.0 / interestPoints.size();
@@ -40,13 +44,13 @@ public class HarrisColorHistogram implements FeatureExtractor  {
 		int windowGap = windowSize / 2;
 		int windowPosX = 0;
 		int windowPosY = 0;
+		int windowPos = 0;
 		
-		int val = 0;
-		int redPos = 0;
-		int greenPos = 0;
-		int bluePos = 0;
-		int histogramPos = 0;
-
+		int bucketIndex = 0;
+		
+		double intensity = 0;
+		double angle = 0;
+		
 		for (Point p : interestPoints) {
 			
 			// Get Window around point
@@ -55,37 +59,31 @@ public class HarrisColorHistogram implements FeatureExtractor  {
 			
 				for (int x = 0; x < windowSize; x++) {
 					windowPosX = Math.max( Math.min(p.x + (x - windowGap), (width - 1)) , 0);
+					windowPos = (windowPosY * width) + windowPosX;
 					
-					val = pixels[(windowPosY * width) + windowPosX];
+					intensity = Math.hypot(
+						(double) xGradient[windowPos], (double) yGradient[windowPos]
+					);
+					angle = Math.toDegrees(
+						Math.atan2((double) xGradient[windowPos], (double) yGradient[windowPos])
+					) + 180; // -180° - 180° --> 0° - 360°
 					
-					redPos = handleBorderCase(((val >> 16) & 0xFF) / bucketSize);
-					greenPos = handleBorderCase(((val >> 8) & 0xFF) / bucketSize);
-					bluePos = handleBorderCase(((val) & 0xFF) / bucketSize);
-					histogramPos = (bluePos * buckets * buckets) + (greenPos * buckets) + redPos;
-					
+					bucketIndex = Math.min((int)(angle / bucketSize), buckets - 1);
 					
 					if (useMinMaxNormalisation)
-						featureVector[histogramPos]++; // just add pixel to bin
+						featureVector[bucketIndex] += intensity;
 					else
-						featureVector[histogramPos] += normUnit;
+						featureVector[bucketIndex] += intensity * normUnit; // normalize by interest point count
+					
+					//System.out.println(windowPosX + "/" + windowPosY + " = " + angle + " --> " + bucketIndex + " : " + intensity);
 				}
 			}
-			
+			//System.out.println("-----------------------------");
 		}
 		
 		if (useMinMaxNormalisation) normalizeMinMax(featureVector);
-			
+		
 		return featureVector;
-	}
-
-	/**
-	 * Make sure the chosen bucket index is not to big
-	 * 
-	 * @param pos
-	 * @return
-	 */
-	private int handleBorderCase(int pos) {
-		return pos >= buckets ? buckets - 1 : pos;
 	}
 	
 	/**

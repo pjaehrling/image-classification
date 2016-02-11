@@ -78,6 +78,8 @@ public class ConfusionMatrix {
 			}
 			System.out.println(line.substring(0, line.length()-2));
 		}
+		System.out.println();
+		System.out.println();
 	}
 	
 }

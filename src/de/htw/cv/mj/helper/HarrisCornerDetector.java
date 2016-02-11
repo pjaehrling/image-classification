@@ -16,14 +16,13 @@ public class HarrisCornerDetector {
 	/**
 	 * Get 
 	 * 
-	 * @param pixel
+	 * @param grayPixel
 	 * @param width
 	 * @param height
 	 * @return
 	 */
-	public static List<Point> detect(int[] pixel, int width, int height) {
-		int size = pixel.length;
-		int[] grayPixel = ImageTransformations.calcGrayscale(pixel);
+	public static List<Point> detect(int[] grayPixel, int width, int height) {
+		int size = grayPixel.length;
 		
 		// Gradient
 		int[] xGradient = ImageTransformations.calcXGradient(grayPixel, width, height);

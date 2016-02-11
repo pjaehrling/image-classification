@@ -6,13 +6,16 @@ package de.htw.cv.mj.featureextractor;
 public class ColorHistogram implements FeatureExtractor  {
 
 	private int buckets;
+	private boolean useMinMaxNormalisation;
 	
 	/**
 	 * 
 	 * @param buckets
 	 */
-	public ColorHistogram(int buckets) {
+	public ColorHistogram(int buckets, boolean useMinMaxNormalisation) {
 		this.buckets = buckets;
+		this.useMinMaxNormalisation = useMinMaxNormalisation;
+		System.out.println("ColorHistogram: " + buckets + " / " + useMinMaxNormalisation);
 	}
 
 	/**
@@ -30,8 +33,8 @@ public class ColorHistogram implements FeatureExtractor  {
 
 		double[] featureVector = new double[buckets * buckets * buckets];
 		
-		// NORMALIZE -> pixel count
-		// double normUnit = 1.0 / pixels.length;
+		// normalize by pixel count
+		double normUnit = 1.0 / pixels.length;
 
 		int pos = 0;
 		int histogramPos = 0;
@@ -47,19 +50,16 @@ public class ColorHistogram implements FeatureExtractor  {
 				bluePos = handleBorderCase(((pixels[pos]) & 255) / bucketSize);
 				histogramPos = bluePos * buckets * buckets + greenPos * buckets + redPos;
 				
-				// just add pixel to bin
-				featureVector[histogramPos]++;
-				
-				// NORMALIZE -> pixel count
-				// featureVector[histogramPos] += normUnit;
+				if (this.useMinMaxNormalisation) {
+					featureVector[histogramPos]++; // just add pixel to bin
+				} else {
+					featureVector[histogramPos] += normUnit; // normalize by pixel count
+				}
 			}
 		}
 		
-		// NORMALIZE -> max
-		normalizeMax(featureVector);
-		
-		// NORMALIZE -> min/max
-		// normalizeMinMax(featureVector);
+		// normalize just using max -> got best results
+		if (this.useMinMaxNormalisation) normalizeMinMax(featureVector);
 			
 		return featureVector;
 	}
@@ -71,26 +71,6 @@ public class ColorHistogram implements FeatureExtractor  {
 	 */
 	private int handleBorderCase(int pos) {
 		return pos >= buckets ? buckets - 1 : pos;
-	}
-	
-	/**
-	 * Normalize with bin-max value
-	 * @param hist
-	 */
-	private void normalizeMax(double[] hist) {
-		double maxVal = 0;
-		
-		// Get Max
-		for (int i = 0; i < hist.length; i++) {
-			if (hist[i] > maxVal) {
-				maxVal = hist[i];
-			}
-		}
-		
-		// Calc
-		for (int i = 0; i < hist.length; i++) {
-			hist[i] = hist[i] / maxVal;
-		}
 	}
 	
 	/**
