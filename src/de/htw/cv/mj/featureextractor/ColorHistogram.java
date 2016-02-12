@@ -1,7 +1,7 @@
 package de.htw.cv.mj.featureextractor;
 
 /**
- * @author Marie Manderla, Philipp Jährling
+ * @author Marie Mandrela, Philipp Jährling
  */
 public class ColorHistogram implements FeatureExtractor  {
 
@@ -9,21 +9,29 @@ public class ColorHistogram implements FeatureExtractor  {
 	private boolean useMinMaxNormalisation;
 	
 	/**
+	 * Constructor. Sets the number of buckets if it's between 2 and 256. Otherwise it's 2.
 	 * 
 	 * @param buckets
 	 */
 	public ColorHistogram(int buckets, boolean useMinMaxNormalisation) {
-		this.buckets = buckets;
+		if (buckets >= 2 && buckets <= 256) {
+			this.buckets = buckets;
+		} else {
+			buckets = 2;
+		}
 		this.useMinMaxNormalisation = useMinMaxNormalisation;
 		System.out.println("ColorHistogram: " + buckets + " / " + useMinMaxNormalisation);
 	}
 
 	/**
+	 * Sets the number of buckets if it's between 2 and 256.
 	 * 
 	 * @param buckets
 	 */
 	public void setBuckets(int buckets) {
-		this.buckets = buckets;
+		if (buckets >= 2 && buckets <= 256) {
+			this.buckets = buckets;
+		}
 	}
 
 	@Override
@@ -65,6 +73,7 @@ public class ColorHistogram implements FeatureExtractor  {
 	}
 
 	/**
+	 * Make sure the chosen bucket index is not to big
 	 * 
 	 * @param pos
 	 * @return
@@ -75,6 +84,7 @@ public class ColorHistogram implements FeatureExtractor  {
 	
 	/**
 	 * Normalize with min and max value
+	 * 
 	 * @param hist
 	 */
 	private void normalizeMinMax(double[] hist) {

@@ -8,6 +8,11 @@ import de.htw.cv.mj.ImageManager;
 import de.htw.cv.mj.distance.EucledianDistance;
 import de.htw.cv.mj.model.Pic;
 
+/**
+ * Eucledian distance with quantification. Compares the Pic class centers.
+ * 
+ * @author Marie Mandrela, Philipp Jährling
+ */
 public class EuclideanLinearQuantified implements Classifier {
 
 	@Override

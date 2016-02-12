@@ -1,5 +1,8 @@
 package de.htw.cv.mj.distance;
 
+/**
+ * @author Marie Mandrela, Philipp Jährling
+ */
 public class EucledianDistance {
 
 	/**

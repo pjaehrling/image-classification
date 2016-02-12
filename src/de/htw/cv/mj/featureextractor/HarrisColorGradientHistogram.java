@@ -7,7 +7,9 @@ import de.htw.cv.mj.helper.HarrisCornerDetector;
 import de.htw.cv.mj.helper.ImageTransformations;
 
 /**
- * @author Marie Manderla, Philipp Jährling
+ * Feature extraction using Harris Corner with Color and Gradient Histograms
+ * 
+ * @author Marie Mandrela, Philipp Jährling
  */
 public class HarrisColorGradientHistogram implements FeatureExtractor  {
 
@@ -117,6 +119,7 @@ public class HarrisColorGradientHistogram implements FeatureExtractor  {
 	
 	/**
 	 * Normalize with min and max value
+	 * 
 	 * @param hist
 	 */
 	private void normalizeMinMax(double[] hist) {

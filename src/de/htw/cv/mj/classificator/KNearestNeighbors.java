@@ -10,16 +10,39 @@ import de.htw.cv.mj.ImageManager;
 import de.htw.cv.mj.distance.EucledianDistance;
 import de.htw.cv.mj.model.Pic;
 
+/**
+ * K-Nearest Neighbor algorithm. 
+ * Determines class by majority vote amongst the nearest neighbors.
+ * 
+ * @author Marie Mandrela, Philipp Jährling
+ */
 public class KNearestNeighbors implements Classifier {
 
 	private double neighbors;
 	
+	/**
+	 * Constructor. Sets the neighbors if the number is greater 0. Otherwise it's 1.
+	 * 
+	 * @param neighbors
+	 */
 	public KNearestNeighbors(double neighbors) {
-		this.neighbors = neighbors;
+		if (neighbors > 0)
+		{
+			this.neighbors = neighbors;
+		} else {
+			this.neighbors = 1;
+		}
 	}
 
+	/**
+	 * Sets the neighbors if the number is greater 0.
+	 * 
+	 * @param neighbors
+	 */
 	public void setNeighbours(double neighbors) {
-		this.neighbors = neighbors;
+		if (neighbors > 0) {
+			this.neighbors = neighbors;
+		}
 	}
 
 	@Override
@@ -83,7 +106,6 @@ public class KNearestNeighbors implements Classifier {
 
 	@Override
 	public int classifyRank(Pic image, ImageManager imageManager) {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 

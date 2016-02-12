@@ -7,7 +7,9 @@ import de.htw.cv.mj.helper.HarrisCornerDetector;
 import de.htw.cv.mj.helper.ImageTransformations;
 
 /**
- * @author Marie Manderla, Philipp Jährling
+ * Feature extraction using Harris Corner with Gradient Histograms.
+ * 
+ * @author Marie Mandrela, Philipp Jährling
  */
 public class HarrisGradientHistogram implements FeatureExtractor  {
 	

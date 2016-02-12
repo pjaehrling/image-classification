@@ -6,10 +6,24 @@ import de.htw.cv.mj.ImageManager;
 import de.htw.cv.mj.classificator.Classifier;
 import de.htw.cv.mj.model.Pic;
 
+/**
+ * Confusion Matrix. A tabular display of the classification results and errors between classes.
+ * 
+ * @author Marie Mandrela, Philipp Jährling
+ */
 public class ConfusionMatrix {
 	
-	public static double[][] calculate(Classifier classifier, ImageManager imageManager, List<String> categories) {
+	/**
+	 * Calculates the confusion matrix.
+	 * 
+	 * @param classifier
+	 * @param imageManager
+	 * @param categories
+	 * @return
+	 */
+	public static double[][] calculate(Classifier classifier, ImageManager imageManager) {
 		
+		List<String> categories = imageManager.getCategoryNames();
 		double[][] matrix = new double[categories.size()][categories.size()];
 		int[] sum = new int[categories.size()];
 		List<Pic> pics = imageManager.getImages();
@@ -35,6 +49,12 @@ public class ConfusionMatrix {
 		return matrix;
 	}
 	
+	/**
+	 * Prints a given confusion matrix to the console.
+	 * 
+	 * @param matrix
+	 * @param categories
+	 */
 	private static void printConfusionMatrixToConsole(double[][] matrix, List<String> categories) {
 		
 		// --- Print Matrix ---

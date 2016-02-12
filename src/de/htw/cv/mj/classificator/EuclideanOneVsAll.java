@@ -9,6 +9,11 @@ import de.htw.cv.mj.ImageManager;
 import de.htw.cv.mj.distance.EucledianDistance;
 import de.htw.cv.mj.model.Pic;
 
+/**
+ * Eucledian distance without quantification. Compares the Pic to all images in the dataset.
+ * 
+ * @author Marie Mandrela, Philipp Jährling
+ */
 public class EuclideanOneVsAll implements Classifier {
 
 	@Override

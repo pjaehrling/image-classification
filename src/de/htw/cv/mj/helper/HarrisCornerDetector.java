@@ -5,7 +5,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author Marie Manderla, Philipp Jährling
+ * Harris Corner Detector.
+ * 
+ * @author Marie Mandrela, Philipp Jährling
  */
 public class HarrisCornerDetector {
 	
@@ -14,7 +16,7 @@ public class HarrisCornerDetector {
 	private static final int NMS_WINDOW_SIZE = 7;
 
 	/**
-	 * Get 
+	 * Get a list of corners of the image.
 	 * 
 	 * @param grayPixel
 	 * @param width

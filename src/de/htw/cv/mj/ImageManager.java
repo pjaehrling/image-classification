@@ -10,7 +10,7 @@ import de.htw.cv.mj.featureextractor.FeatureExtractor;
 import de.htw.cv.mj.model.Pic;
 
 /**
- * @author Marie Manderla, Philipp Jährling
+ * @author Marie Mandrela, Philipp Jährling
  */
 public class ImageManager {
 	

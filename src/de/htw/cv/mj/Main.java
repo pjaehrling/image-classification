@@ -9,7 +9,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 
 /**
- * @author Marie Manderla, Philipp Jährling
+ * @author Marie Mandrela, Philipp Jährling
  */
 public class Main extends Application {
 	

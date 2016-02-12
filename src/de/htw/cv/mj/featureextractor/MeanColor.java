@@ -1,5 +1,10 @@
 package de.htw.cv.mj.featureextractor;
 
+/**
+ * Feature extraction using Mean Color of the entire image.
+ * 
+ * @author Marie Mandrela, Philipp Jährling
+ */
 public class MeanColor implements FeatureExtractor {
 
 	@Override

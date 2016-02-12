@@ -36,7 +36,7 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.layout.GridPane;
 
 /**
- * @author Marie Manderla, Philipp Jährling
+ * @author Marie Mandrela, Philipp Jährling
  */
 public class ImageClassificationUIController {
 	
@@ -104,7 +104,9 @@ public class ImageClassificationUIController {
 	@FXML
 	Label overallCorrectLabel;
 	
-	
+	/**
+	 * Initializes the GUI and Init Manager.
+	 */
 	@FXML
 	public void initialize() {
 		imageManager = new ImageManager();
@@ -135,8 +137,9 @@ public class ImageClassificationUIController {
 	/* ***************************************************************************************************
 	 * Helper
 	 * ***************************************************************************************************/	
+	
 	/**
-	 * 
+	 * Fills the test image ComboCox with all image names
 	 */
 	private void fillTestImageChoices() {
 		// Fill
@@ -500,7 +503,7 @@ public class ImageClassificationUIController {
 		    	averageRankLabel.setText(String.valueOf(meanRank));
 		    	
 		    	List<String> categoryNames = imageManager.getCategoryNames();
-		    	double[][] matrix = ConfusionMatrix.calculate(classifier, imageManager, categoryNames);
+		    	double[][] matrix = ConfusionMatrix.calculate(classifier, imageManager);
 		    	setConfusionMatrixImage(matrix, categoryNames);
 		    }
 		});

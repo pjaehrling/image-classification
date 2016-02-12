@@ -1,5 +1,9 @@
 package de.htw.cv.mj.classificator;
 
+/**
+ * Represents a classification result as a category and distance.
+ * @author Marie Mandrela, Philipp Jährling
+ */
 public class Result implements Comparable<Result> {
 
 	private String category;
