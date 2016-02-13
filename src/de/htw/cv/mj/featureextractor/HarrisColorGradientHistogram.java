@@ -4,6 +4,7 @@ import java.awt.Point;
 import java.util.List;
 
 import de.htw.cv.mj.helper.HarrisCornerDetector;
+import de.htw.cv.mj.helper.HistogramHelper;
 import de.htw.cv.mj.helper.ImageTransformations;
 
 /**
@@ -74,9 +75,9 @@ public class HarrisColorGradientHistogram implements FeatureExtractor  {
 					
 					// ------- Color -------
 					val = pixels[windowPos];
-					redPos = handleBorderCase(((val >> 16) & 0xFF) / colorBucketSize);
-					greenPos = handleBorderCase(((val >> 8) & 0xFF) / colorBucketSize);
-					bluePos = handleBorderCase(((val) & 0xFF) / colorBucketSize);
+					redPos = HistogramHelper.handleBorderCase(((val >> 16) & 0xFF) / colorBucketSize, colorBuckets);
+					greenPos = HistogramHelper.handleBorderCase(((val >> 8) & 0xFF) / colorBucketSize, colorBuckets);
+					bluePos = HistogramHelper.handleBorderCase(((val) & 0xFF) / colorBucketSize, colorBuckets);
 					histogramPos = (bluePos * colorBuckets * colorBuckets) + (greenPos * colorBuckets) + redPos;
 					
 					if (useMinMaxNormalisation) 
@@ -102,44 +103,9 @@ public class HarrisColorGradientHistogram implements FeatureExtractor  {
 			}
 		}
 		
-		if (useMinMaxNormalisation) normalizeMinMax(featureVector);
+		if (useMinMaxNormalisation) HistogramHelper.normalizeMinMax(featureVector);
 			
 		return featureVector;
-	}
-
-	/**
-	 * Make sure the chosen bucket index is not to big
-	 * 
-	 * @param pos
-	 * @return
-	 */
-	private int handleBorderCase(int pos) {
-		return pos >= colorBuckets ? colorBuckets - 1 : pos;
-	}
-	
-	/**
-	 * Normalize with min and max value
-	 * 
-	 * @param hist
-	 */
-	private void normalizeMinMax(double[] hist) {
-		double maxVal = 0;
-		double minValue = Double.MAX_VALUE;
-		
-		// Get Min/Max
-		for (int i = 0; i < hist.length; i++) {
-			if (hist[i] > maxVal) {
-				maxVal = hist[i];
-			}
-			if (hist[i] < minValue) {
-				minValue = hist[i];
-			}
-		}
-		
-		// Calc
-		for (int i = 0; i < hist.length; i++) {
-			hist[i] = (hist[i] - minValue) / (maxVal - minValue);
-		}
 	}
 	
 }
