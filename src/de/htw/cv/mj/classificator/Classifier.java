@@ -1,6 +1,7 @@
 package de.htw.cv.mj.classificator;
 
 import de.htw.cv.mj.ImageManager;
+import de.htw.cv.mj.distance.Distance;
 import de.htw.cv.mj.model.Pic;
 
 /**
@@ -8,7 +9,21 @@ import de.htw.cv.mj.model.Pic;
  * 
  * @author Marie Mandrela, Philipp Jährling
  */
-public interface Classifier {
+public abstract class Classifier {
+	
+	Distance distance;
+	
+	public Classifier(Distance distance) {
+		this.distance = distance;
+	}
+	
+	public Distance getDistance() {
+		return distance;
+	}
+
+	public void setDistance(Distance distance) {
+		this.distance = distance;
+	}
 	
 	/**
 	 * Classify the given Pic.
@@ -17,7 +32,7 @@ public interface Classifier {
 	 * @param imageManager
 	 * @return
 	 */
-	public String classify(Pic image, ImageManager imageManager);
+	public abstract String classify(Pic image, ImageManager imageManager);
 	
 	/**
 	 * Classify the given Pic until the correct category is found. 
@@ -27,5 +42,5 @@ public interface Classifier {
 	 * @param imageManager
 	 * @return
 	 */
-	public int classifyRank(Pic image, ImageManager imageManager);
+	public abstract int classifyRank(Pic image, ImageManager imageManager);
 }

@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import de.htw.cv.mj.ImageManager;
+import de.htw.cv.mj.distance.Distance;
 import de.htw.cv.mj.distance.EucledianDistance;
 import de.htw.cv.mj.model.Pic;
 
@@ -14,7 +15,11 @@ import de.htw.cv.mj.model.Pic;
  * 
  * @author Marie Mandrela, Philipp Jährling
  */
-public class EuclideanOneVsAll implements Classifier {
+public class SimpleOneVsAll extends Classifier {
+
+	public SimpleOneVsAll(Distance distance) {
+		super(distance);
+	}
 
 	@Override
 	public String classify(Pic image, ImageManager imageManager) {
@@ -29,7 +34,7 @@ public class EuclideanOneVsAll implements Classifier {
 				continue; // do not compare with itself
 			}
 			
-			distance = EucledianDistance.calculate(image.getFeatures(), trainedImage.getFeatures());
+			distance = this.distance.calculate(image.getFeatures(), trainedImage.getFeatures());
 			// System.out.println(trainedImage.getName() + " --> " + distance + " (min: " + minDistance + ")");
 			
 			if (distance < minDistance) {
@@ -52,7 +57,7 @@ public class EuclideanOneVsAll implements Classifier {
 				continue; // do not compare with itself
 			}
 				
-			double distance = EucledianDistance.calculate(image.getFeatures(), trainedImage.getFeatures());
+			double distance = this.distance.calculate(image.getFeatures(), trainedImage.getFeatures());
 			
 			String trainedCategory = trainedImage.getCategoryName();
 			Result savedDistance = distances.get(trainedCategory);

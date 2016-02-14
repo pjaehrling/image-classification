@@ -7,6 +7,7 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import de.htw.cv.mj.ImageManager;
+import de.htw.cv.mj.distance.Distance;
 import de.htw.cv.mj.distance.EucledianDistance;
 import de.htw.cv.mj.model.Pic;
 
@@ -16,7 +17,7 @@ import de.htw.cv.mj.model.Pic;
  * 
  * @author Marie Mandrela, Philipp Jährling
  */
-public class KNearestNeighbors implements Classifier {
+public class KNearestNeighbors extends Classifier {
 
 	private double neighbors;
 	
@@ -25,7 +26,8 @@ public class KNearestNeighbors implements Classifier {
 	 * 
 	 * @param neighbors
 	 */
-	public KNearestNeighbors(double neighbors) {
+	public KNearestNeighbors(Distance distance, double neighbors) {
+		super(distance);
 		if (neighbors > 0)
 		{
 			this.neighbors = neighbors;
@@ -57,7 +59,7 @@ public class KNearestNeighbors implements Classifier {
 				continue; // do not compare with itself
 			}
 
-			distance = EucledianDistance.calculate(image.getFeatures(), trainedImage.getFeatures());
+			distance = this.distance.calculate(image.getFeatures(), trainedImage.getFeatures());
 			Result result = new Result(trainedImage.getCategoryName(), distance);
 			
 			if (neighborImages.size() < neighbors) {

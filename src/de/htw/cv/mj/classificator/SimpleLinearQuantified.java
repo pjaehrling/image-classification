@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.List;
 
 import de.htw.cv.mj.ImageManager;
+import de.htw.cv.mj.distance.Distance;
 import de.htw.cv.mj.distance.EucledianDistance;
 import de.htw.cv.mj.model.Pic;
 
@@ -13,7 +14,11 @@ import de.htw.cv.mj.model.Pic;
  * 
  * @author Marie Mandrela, Philipp Jährling
  */
-public class EuclideanLinearQuantified implements Classifier {
+public class SimpleLinearQuantified extends Classifier {
+
+	public SimpleLinearQuantified(Distance distance) {
+		super(distance);
+	}
 
 	@Override
 	public String classify(Pic image, ImageManager imageManager) {
@@ -28,7 +33,7 @@ public class EuclideanLinearQuantified implements Classifier {
 		
 		// loop through categories
 		for (int ci = 0; ci < categories.size(); ci++) {
-			distance = EucledianDistance.calculate(image.getFeatures(), categoryFeatures[ci]);
+			distance = this.distance.calculate(image.getFeatures(), categoryFeatures[ci]);
 			if (distance < minDistance) {
 				minDistance = distance;
 				bestFittingCategory = categories.get(ci);
@@ -49,7 +54,7 @@ public class EuclideanLinearQuantified implements Classifier {
 		
 		
 		for (int ci = 0; ci < categories.size(); ci++) {
-			distance = EucledianDistance.calculate(image.getFeatures(), categoryFeatures[ci]);
+			distance = this.distance.calculate(image.getFeatures(), categoryFeatures[ci]);
 			distancesList.add(new Result(categories.get(ci), distance));
 		}	
 		Collections.sort(distancesList);

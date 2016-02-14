@@ -1,12 +1,9 @@
 package de.htw.cv.mj.distance;
 
-/**
- * @author Marie Mandrela, Philipp Jährling
- */
-public class EucledianDistance implements Distance {
+public class ManhattanDistance implements Distance {
 
 	/**
-	 * Calc the euclidean distance between two points.
+	 * Calc the Manhattan distance between two points.
 	 * The dimensions doesn't matter, but both should have the same.
 	 * 
 	 * @param a
@@ -18,8 +15,9 @@ public class EucledianDistance implements Distance {
 		for (int i = 0; i < a.length; i++) {
 			if (b.length <= i) break;
 			
-			sum += Math.pow( (a[i] - b[i]), 2);
+			sum += Math.abs(a[i] - b[i]);
 		}
-		return Math.sqrt(sum);
+		return sum;
 	}
+
 }

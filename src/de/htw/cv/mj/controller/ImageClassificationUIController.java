@@ -4,21 +4,12 @@ import java.io.File;
 import java.util.List;
 
 import de.htw.cv.mj.ImageManager;
-import de.htw.cv.mj.accuracy.ConfusionMatrix;
-import de.htw.cv.mj.accuracy.MeanRank;
-import de.htw.cv.mj.accuracy.CorrectRate;
-import de.htw.cv.mj.classificator.Classifier;
-import de.htw.cv.mj.classificator.EuclideanOneVsAll;
-import de.htw.cv.mj.classificator.EuclideanLinearQuantified;
-import de.htw.cv.mj.classificator.KNearestNeighbors;
-import de.htw.cv.mj.featureextractor.ColorHistogram;
-import de.htw.cv.mj.featureextractor.FeatureExtractor;
-import de.htw.cv.mj.featureextractor.HarrisGradientHistogram;
-import de.htw.cv.mj.featureextractor.HarrisMeanColor;
-import de.htw.cv.mj.featureextractor.HarrisColorHistogram;
-import de.htw.cv.mj.featureextractor.HarrisColorGradientHistogram;
-import de.htw.cv.mj.featureextractor.MeanColor;
+import de.htw.cv.mj.accuracy.*;
+import de.htw.cv.mj.classificator.*;
+import de.htw.cv.mj.distance.*;
+import de.htw.cv.mj.featureextractor.*;
 import de.htw.cv.mj.model.Pic;
+
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -42,7 +33,8 @@ public class ImageClassificationUIController {
 	
 	private String[] imageSetChoices = new String[]{"Easy (250 Images)", "Hard (720 Images)"};
 	private String[] imageSetPathes = new String[]{"images/easy", "images/hard"};
-	private String[] classMeasureChoices = new String[]{"Eucledian (1vsAll)", "Eucledian (Linear Quantified)", "3-Nearest Neighbors (1vsAll)", "5-Nearest Neighbors (1vsAll)"};
+	private String[] distanceChoices = new String[]{"Manhattan (L1)", "Eucledian (L2)"};
+	private String[] classMeasureChoices = new String[]{"Distance (1vsAll)", "Distance (Linear Quantified)", "3-Nearest Neighbors (1vsAll)", "5-Nearest Neighbors (1vsAll)"};
 	private String[] featureTypeChoices = new String[]{
 				"Mean Color (All)", "Color Histogram (All)", 
 				"Mean Color (IP)", "Color Histogram (IP)",
@@ -60,6 +52,7 @@ public class ImageClassificationUIController {
 	private ImageManager imageManager;
 	private FeatureExtractor extractor;
 	private Classifier classifier;
+	private Distance distance;
 	
 	@FXML
 	ComboBox<String> imageSetComboBox;
@@ -67,6 +60,8 @@ public class ImageClassificationUIController {
 	ComboBox<String> testImageComboBox;
 	@FXML
 	ComboBox<String> featureTypeComboBox;
+	@FXML
+	ComboBox<String> distanceComboBox;
 	@FXML
 	ComboBox<String> classMeasureComboBox;
 	@FXML
@@ -117,6 +112,7 @@ public class ImageClassificationUIController {
 		initTestImageComboBox();
 		initImageSetComboBox();
 		initFeatureTypeComboBox();
+		initDistanceMeasureComboBox();
 		initClassMeasureComboBox();
 		
 		initIPWindowSizeComboBox();
@@ -385,31 +381,58 @@ public class ImageClassificationUIController {
 	}
 	
 	/**
+	 * Distance Measure Choices
+	 */
+	private void initDistanceMeasureComboBox() {
+		ObservableList<String> distanceChoiceList = FXCollections.observableArrayList(distanceChoices);
+		distanceComboBox.setItems(distanceChoiceList);
+		
+		distanceComboBox.getSelectionModel().selectedIndexProperty().addListener((observable, oldIndex, newIndex) -> {
+			if (oldIndex != newIndex) {
+				switch ((int) newIndex) {
+		    		case 0:
+		    			distance = new ManhattanDistance();
+		    			break;
+		    		case 1:
+		    			distance = new EucledianDistance();
+		    			break;
+				}
+				if (classifier != null) {
+					classifier.setDistance(distance);
+				}
+			}
+		});
+		
+		distanceComboBox.getSelectionModel().selectFirst();
+	}
+	
+	/**
 	 * Class Measure Choice
 	 */
 	private void initClassMeasureComboBox() {
-		ObservableList<String> featureTypeChoiceList = FXCollections.observableArrayList(classMeasureChoices);
-		classMeasureComboBox.setItems(featureTypeChoiceList);
+		ObservableList<String> classMeasureChoiceList = FXCollections.observableArrayList(classMeasureChoices);
+		classMeasureComboBox.setItems(classMeasureChoiceList);
         
         // Add event listener
 		classMeasureComboBox.getSelectionModel().selectedIndexProperty().addListener((observable, oldIndex, newIndex) -> {
 			if (oldIndex != newIndex) {
 				switch ((int) newIndex) {
 		    		case 0:
-		    			classifier = new EuclideanOneVsAll();
+		    			classifier = new SimpleOneVsAll(distance);
 		    			break;
 		    		case 1:
-		    			classifier = new EuclideanLinearQuantified();
+		    			classifier = new SimpleLinearQuantified(distance);
 		    			break;
 		    		case 2:
-		    			classifier = new KNearestNeighbors(3);
+		    			classifier = new KNearestNeighbors(distance, 3);
 		    			break;
 		    		case 3:
-		    			classifier = new KNearestNeighbors(5);
+		    			classifier = new KNearestNeighbors(distance, 5);
 		    			break;
 				}
 			}
         });
+		
 		classMeasureComboBox.getSelectionModel().selectFirst();
 	}
 	

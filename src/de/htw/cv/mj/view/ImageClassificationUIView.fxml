@@ -21,6 +21,7 @@
           <ColumnConstraints hgrow="SOMETIMES" />
           <ColumnConstraints hgrow="SOMETIMES" />
           <ColumnConstraints hgrow="SOMETIMES" />
+          <ColumnConstraints hgrow="SOMETIMES" />          
           <ColumnConstraints hgrow="SOMETIMES" />
         </columnConstraints>
         <rowConstraints>
@@ -44,14 +45,19 @@
           <Label text="3. Feature Type:" GridPane.columnIndex="2" />
           <ComboBox fx:id="featureTypeComboBox" prefWidth="160.0" GridPane.columnIndex="2" GridPane.rowIndex="1" />
           
+                    
           <!-- Distance -->
-          <Label text="4. Class Measure:" GridPane.columnIndex="3" />
-          <ComboBox fx:id="classMeasureComboBox" prefWidth="160.0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+          <Label text="4. Distance:" GridPane.columnIndex="3" />
+          <ComboBox fx:id="distanceComboBox" prefWidth="160.0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+          
+          <!-- Classification -->
+          <Label text="5. Class Measure:" GridPane.columnIndex="4" />
+          <ComboBox fx:id="classMeasureComboBox" prefWidth="160.0" GridPane.columnIndex="4" GridPane.rowIndex="1" />
           
           <!-- Actions -->
-          <Button fx:id="trainButton" prefWidth="100.0" text="Train" GridPane.columnIndex="4" />
-          <Button fx:id="calculateButton" prefWidth="100.0" text="Calculate" GridPane.columnIndex="4" GridPane.rowIndex="1" />
-          <Button fx:id="accuracyMeasurementButton" prefWidth="100.0" text="Measure Accuracy" GridPane.columnIndex="4" GridPane.rowIndex="2" />
+          <Button fx:id="trainButton" prefWidth="100.0" text="Train" GridPane.columnIndex="5" />
+          <Button fx:id="calculateButton" prefWidth="100.0" text="Calculate" GridPane.columnIndex="5" GridPane.rowIndex="1" />
+          <Button fx:id="accuracyMeasurementButton" prefWidth="100.0" text="Measure Accuracy" GridPane.columnIndex="5" GridPane.rowIndex="2" />
           
           <Label text="IP - Window Size (x*x)" GridPane.rowIndex="2" />
           <ComboBox fx:id="ipWindowSizeComboBox" prefWidth="160.0" GridPane.rowIndex="3" />
